@@ -17,6 +17,10 @@
     margin-top: 5px;
   }
 
+  .system-row:last-of-type{
+    margin-bottom: 5px;
+  }
+
   .system-row{
     margin-top: 10px;
   }

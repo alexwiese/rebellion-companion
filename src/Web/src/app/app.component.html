@@ -7,10 +7,12 @@
     </mat-list>
   </div>
 
-  <mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-around center">
-    <button mat-button (click)="build()">Build</button>
-    <button mat-button (click)="reset()">Reset</button>
-    <p>Rebels: {{rebelSystemCount}}</p>
-    <p>Empire: {{imperialSystemCount}}</p>
+  <mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-evenly center">
+    <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex>
+        <button mat-button (click)="build()">Build</button>
+        <button mat-button (click)="reset()">Reset</button>
+        <p>Rebels: {{rebelSystemCount}}</p>
+        <p>Empire: {{imperialSystemCount}}</p>
+    </div>
   </mat-toolbar>
 </div>

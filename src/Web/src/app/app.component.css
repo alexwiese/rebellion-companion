@@ -1,5 +1,6 @@
 .container{
     overflow-y:auto;
+    margin-bottom: 56px;
 }
 
 .toolbar {   
@@ -9,6 +10,10 @@
 
   .footer{
       z-index: 3;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
   }
 
   .main {
@@ -18,4 +23,19 @@
 
 .mat-button{
     background: gray;
+    line-height:30px;
+    min-width: 40px;   
+    font-size: 12px; 
+}
+
+.footer p {
+    font-size: 16px;
+}
+
+.footer{
+    height: 56px;
+}
+
+.footer > div{
+    max-width: 500px;
 }
