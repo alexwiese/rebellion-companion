@@ -13,9 +13,9 @@ namespace Rebellion.Companion.Core
         {
         }
 
-        public Board(IEnumerable<Systems.System> planets)
+        public Board(IEnumerable<Systems.System> systems)
         {
-            Systems = planets.ToDictionary(p => p.Name);
+            Systems = systems.ToDictionary(p => p.Name);
         }
 
         public Dictionary<string, Systems.System> Systems { get; }
