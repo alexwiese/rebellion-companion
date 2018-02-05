@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Rebellion.Companion.Core</AssemblyName>
+    <RootNamespace>Rebellion.Companion.Core</RootNamespace>
+  </PropertyGroup>
+
+</Project>
