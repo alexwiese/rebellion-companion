@@ -2,6 +2,10 @@
 
 Building blocks of Rebellion Companion apps/services.
 
+Demo site:
+
+http://alexwiese.github.io/rc
+
 Example usage:
 
 	var board = new Board();
