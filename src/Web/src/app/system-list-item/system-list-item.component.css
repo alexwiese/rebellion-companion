@@ -1,0 +1,42 @@
+.system-icon {
+    height: 50%;    
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    position: relative;
+    margin: 5px;
+    opacity: 0.2;    
+}
+
+.system-row:hover, .system-row.mat-list-item-focus {
+    background: rgba(0,0,0,.04);
+  }
+
+  .system-row:first-of-type{
+    margin-top: 5px;
+  }
+
+  .system-row{
+    margin-top: 10px;
+  }
+
+  .set{
+      opacity: 1;
+  }
+
+ ::ng-deep .large .mat-list-text{
+    max-width: 30%;
+}
+
+::ng-deep .large .mat-list-item-content{
+    justify-content: center;
+}
+
+::ng-deep .odd .mat-list-item {
+    background: #505050;
+}
+
+::ng-deep .odd .mat-list-item:hover {
+    background:#505050;
+}

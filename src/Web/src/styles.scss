@@ -1,0 +1,11 @@
+html, body{
+    height: 100%;
+    color: #e0e0e0;   
+    margin:0;
+}
+
+@import '~@angular/material/_theming.scss';
+@include mat-core();
+
+$default-theme: mat-dark-theme(mat-palette($mat-green, A400), mat-palette($mat-light-blue, A400));
+@include angular-material-theme($default-theme);
