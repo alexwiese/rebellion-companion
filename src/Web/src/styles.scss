@@ -9,3 +9,26 @@ html, body{
 
 $default-theme: mat-dark-theme(mat-palette($mat-green, A400), mat-palette($mat-light-blue, A400));
 @include angular-material-theme($default-theme);
+
+.mat-tab-body-wrapper{
+    height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width:8px;
+  }
+::-webkit-scrollbar * {
+    background:transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+  ::-webkit-scrollbar-thumb {
+    opacity:0.1;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #666666; 
+  }

@@ -1,0 +1,14 @@
+  <div class="container" fxFlex>
+    <mat-list>
+      <system-list-item *ngFor="let system of systems; let isOdd=odd; let isEven=even" [system]="system" [class.odd]="isOdd" [class.even]="isEven"></system-list-item>
+    </mat-list>
+  </div>
+
+  <mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-evenly center">
+    <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex>
+      <button mat-button (click)="build()">Build</button>
+      <button mat-button (click)="reset()">Reset</button>
+      <p>Rebels: {{rebelSystemCount}}</p>
+      <p>Empire: {{imperialSystemCount}}</p>
+    </div>
+  </mat-toolbar>

@@ -1,0 +1,11 @@
+<div class="container" fxFlex>
+  <mat-list>
+    <probe-list-item *ngFor="let system of systems; let isOdd=odd; let isEven=even" [system]="system" [class.odd]="isOdd" [class.even]="isEven"></probe-list-item>
+  </mat-list>
+</div>
+
+<mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-evenly center">
+  <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex>
+    <button mat-button (click)="reset()">Reset</button>
+  </div>
+</mat-toolbar>

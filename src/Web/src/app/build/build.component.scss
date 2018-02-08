@@ -1,0 +1,33 @@
+.container {
+    overflow-y: auto;
+    margin-bottom: 56px;
+}
+
+.footer {
+    z-index: 3;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 56px;
+
+    p {
+        font-size: 16px;
+    }
+
+    >div {
+        max-width: 500px;
+    }
+}
+
+:host {
+    height: 100%;
+    width: 100%;
+}
+
+.mat-button {
+    background: gray;
+    line-height: 30px;
+    min-width: 40px;
+    font-size: 12px;
+}

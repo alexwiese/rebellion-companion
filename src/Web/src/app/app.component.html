@@ -1,18 +1,19 @@
-<div class="main" fxLayout="column" fxLayoutAlign="center stretch">
-  <mat-toolbar class="toolbar">Rebellion Companion</mat-toolbar>
+<div fxLayout="column" class="app">
+    <mat-toolbar class="toolbar">
+        Rebellion Companion
+    </mat-toolbar>
 
-  <div class="container" fxFlex>
-    <mat-list>
-      <system-list-item *ngFor="let system of systems; let isOdd=odd; let isEven=even" [system]="system" [class.odd]="isOdd" [class.even]="isEven"></system-list-item>
-    </mat-list>
-  </div>
+    <mat-tab-group>
+        <mat-tab label="Probe">
+            <app-probe></app-probe>
+        </mat-tab>
+        <mat-tab label="Build">
+            <app-build></app-build>
+        </mat-tab>
+    </mat-tab-group>
 
-  <mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-evenly center">
-    <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex>
-        <button mat-button (click)="build()">Build</button>
-        <button mat-button (click)="reset()">Reset</button>
-        <p>Rebels: {{rebelSystemCount}}</p>
-        <p>Empire: {{imperialSystemCount}}</p>
-    </div>
-  </mat-toolbar>
+    <!-- <div class="app" fxLayout="row" fxLayoutAlign="space-between stretch" fxHide.lt-lg>
+        <app-probe fxHide.lt-lg></app-probe>
+        <app-build fxHide.lt-lg></app-build>
+    </div> -->
 </div>
