@@ -1,0 +1,56 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+    <form [formGroup]="manufacturerForm" (ngSubmit)="onSubmit(manufacturerForm.value)">
+
+      <p-messages [value]="errors"></p-messages>
+
+      <p-panel>
+        <p-header>
+          <h3 *ngIf="manufacturer.id">Edit {{ manufacturer.name }}</h3>
+          <h3 *ngIf="!manufacturer.id">Add</h3>
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="manufacturerForm.controls['name'].hasError('required') && manufacturerForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="manufacturerForm.controls['name'].hasError('maxlength') && manufacturerForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="manufacturerForm.controls['name'].hasError('minlength') && manufacturerForm.dirty">
+                Name must have a minimum or 3 characters
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <p-panel header="Models [{{ manufacturer.models.length || 0 }}]">
+        <p-dataTable [value]="manufacturer.models"  *ngIf="manufacturer.models.length > 0">
+          <p-column field="name" header="Model Name"></p-column>
+          <p-column field="assetTypeName" header="Asset Type Name"></p-column>
+        </p-dataTable>
+      </p-panel>
+
+      <br>
+
+      <!--Buttons-->
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="manufacturerForm.pristine" label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+  </div>
+</div>

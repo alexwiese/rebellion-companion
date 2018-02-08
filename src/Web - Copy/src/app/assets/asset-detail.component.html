@@ -1,0 +1,723 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="loaded">
+    <form [formGroup]="assetForm" (ngSubmit)="onSubmit(assetForm.value)" #af>
+      <p-messages *ngIf="!asset.assetTypeName" [value]="warnings"></p-messages>
+      <p-panel>
+        <p-header *ngIf="asset.id === getEmptyGuid()">
+          Add Asset
+        </p-header>
+        <p-header *ngIf="asset.id !== getEmptyGuid()">
+          Edit Asset [{{ asset.identity }}]
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+          <div class="ui-grid-col-10" *ngIf="showVerified()">
+            <input type="text" class="aed-input-ro" value="Last Verified {{ asset.lastVerifiedDate  | date: 'dd/MM/yyyy' }}" readonly>
+            <span>
+              <i class="fa fa-check fa-pull-left" style="color: green !important; font-weight: bold; margin: 3px 5px;" aria-hidden="true"></i>
+            </span>
+            <br>
+          </div>
+
+          <div class="ui-grid-col-10" *ngIf="!showVerified()">
+            <input type="text" class="aed-input-ro" style="color: #ffc107 !important; font-weight: bold" value="Not Verified" readonly>
+            <span>
+              <i class="fa fa-exclamation-triangle fa-pull-left" style="color: #ffc107 !important; font-weight: bold; margin: 3px 5px;"
+                aria-hidden="true"></i>
+            </span>
+            <br>
+          </div>
+        </div>
+
+        <p-tabView>
+          <!-- Main Details -->
+          <p-tabPanel header="Main Details" headerStyleClass="{{ getPanelHeaderClass('main') }}">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Asset Name *
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="name" placeholder="Asset name..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['name'].hasError('required')">
+                    Asset name is required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['name'].hasError('maxlength')">
+                    Asset name can't be more than 50 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Barcode
+                </div>
+                <div class="ui-grid-col-4">
+                  <input pInputText type="text" formControlName="barcode" placeholder="Barcode..." />
+                </div>
+                <div class="ui-grid-col-2">
+                  <button pButton type="text" [disabled]="loadingBarcode" (click)="file.click();$event.preventDefault()" icon="fa-barcode"
+                    label="Scan" style="float: right"></button>
+                  <input [hidden]="true" id='file-upload' type="file" (change)="fileSelected($event)" capture="camera" accept="image/*" #file
+                  />
+                  <canvas [hidden]="true" id="barcode-canvas"></canvas>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['barcode'].hasError('invalidBarcode')">
+                    Invalid barcode, must be 12 or 14 digits
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Asset Type
+                </div>
+                <div class="ui-grid-col-10" *ngIf="asset.assetTypeName">
+                  <input type="text" class="aed-input-ro" value="{{ asset.assetTypeName }}" readonly>
+                  <span>
+                    <i class="fa fa-check fa-pull-left" style="color: green !important; font-weight: bold; margin: 3px 5px;" aria-hidden="true"></i>
+                  </span>
+                  <br>
+                  <span style="font-weight: normal; font-size: 12px" *ngIf="asset.heirarchy">Asset Class: {{ asset.heirarchy }}</span>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-12">
+                  <div class="card card-w-title">
+                    <h3>Find Asset by:</h3>
+                    <div class="ui-g">
+                      <div class="ui-g-12 ui-md-4">
+                        <p-radioButton name="assetSearch" value="manufacturer" label="Manufacturer/Model" formControlName="assetSelectionMode" (onClick)="onAssetTypeSelectClicked('manufacturer')"></p-radioButton>
+                      </div>
+                      <div class="ui-g-12 ui-md-4">
+                        <p-radioButton name="assetSearch" value="assetClass" label="Asset Class" formControlName="assetSelectionMode" (onClick)="onAssetTypeSelectClicked('assetClass')"></p-radioButton>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row" *ngIf="assetForm.controls['assetSelectionMode'].value === 'manufacturer'">
+                <div class="ui-grid-col-12">
+                  <div class="card card-w-title">
+                    <h3>Manufacturer / Model:</h3>
+                    <div class="ui-g">
+                      <div class="ui-g-2">
+                        Manufacturer
+                      </div>
+                      <div class="ui-g-6">
+                        <p-dropdown [options]="manufacturers" [(ngModel)]="manufacturerId" formControlName="manufacturerId" [autoWidth]="false" (onChange)="onManufacturerChange($event)"></p-dropdown>
+                      </div>
+                      <div class="ui-g-4">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="ui-g">
+                      <div class="ui-g-2">
+                        Model
+                      </div>
+                      <div class="ui-g-6">
+                        <p-dropdown [options]="models" [(ngModel)]="modelId" formControlName="modelId" [autoWidth]="false" (onChange)="onModelChange($event)"></p-dropdown>
+                      </div>
+                      <div class="ui-g-4">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row" *ngIf="assetForm.controls['assetSelectionMode'].value === 'assetClass'">
+                <div class="ui-grid-col-12">
+                  <div class="card card-w-title">
+                    <h3>Asset Class: {{ asset.heirarchy }}</h3>
+                    <div class="ui-g">
+                      <div class="ui-g-2">
+                        Asset Class 1
+                      </div>
+                      <div class="ui-g-4">
+                        <p-dropdown formControlName="assetClassOne" [options]="assetClassOneSelectItems" [style]="{'width':'100%'}" (onChange)="selectAssetClassOne($event)">
+                          <ng-template let-ac pTemplate="item">
+                            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                              <div style="font-size:14px;float:right;margin-top:4px">{{ac.label}}</div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                      </div>
+                      <div class="ui-g-2">
+                        Asset Class 2
+                      </div>
+                      <div class="ui-g-4">
+                        <p-dropdown formControlName="assetClassTwo" [options]="assetClassTwoSelectItems" [style]="{'width':'100%'}" (onChange)="selectAssetClassTwo($event)">
+                          <ng-template let-ac pTemplate="item">
+                            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                              <div style="font-size:14px;float:right;margin-top:4px">{{ac.label}}</div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="ui-g">
+                      <div class="ui-g-2">
+                        Asset Class 3
+                      </div>
+                      <div class="ui-g-4">
+                        <p-dropdown formControlName="assetClassThree" [options]="assetClassThreeSelectItems" [style]="{'width':'100%'}" (onChange)="selectAssetClassThree($event)">
+                          <ng-template let-ac pTemplate="item">
+                            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                              <div style="font-size:14px;float:right;margin-top:4px">{{ac.label}}</div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                      </div>
+                      <div class="ui-g-2">
+                        Asset Class 4
+                      </div>
+                      <div class="ui-g-4">
+                        <p-dropdown formControlName="assetClassFour" [options]="assetClassFourSelectItems" [style]="{'width':'100%'}" (onChange)="selectAssetClassFour($event)">
+                          <ng-template let-ac pTemplate="item">
+                            <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                              <div style="font-size:14px;float:right;margin-top:4px">{{ac.label}}</div>
+                            </div>
+                          </ng-template>
+                        </p-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Asset Status *
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="asset.statusTypes" [(ngModel)]="asset.assetStatus" formControlName="assetStatus" [autoWidth]="false">></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Asset Criticality *
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="asset.criticalityTypes" [(ngModel)]="asset.assetCriticality" formControlName="assetCriticality" [autoWidth]="false"></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Asset Condition *
+                </div>
+                <div class="ui-grid-col-8">
+                  <p-slider [(ngModel)]="asset.assetCondition" [min]="0" [max]="10" [step]="1" formControlName="assetCondition"></p-slider>
+                  <p style="margin: 5px 0">{{ (asset.assetCondition / 2).toFixed(1) }} - {{ asset.getAssetConditionString(asset.assetCondition) }}</p>
+                </div>
+                <div class="ui-grid-col-2">
+                </div>
+              </div>
+
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Base Date *
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-calendar id="baseDate" formControlName="baseDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['baseDate'].hasError('required')">
+                    Base date is required
+                  </div>
+                </div>
+              </div>
+
+              <br>
+              <div *ngIf="asset.files && asset.files.length > 0">
+                <h2>Asset Images</h2>
+              </div>
+              <div class="ui-grid-row aed-row" *ngIf="asset.files && asset.files.length > 0">
+                <div *ngIf="loading == false" class="context-section aedile-datatable">
+                  <div class="aed-flex">
+                    <div *ngFor="let f of asset.files" class="aed-flex-item">
+                      <div>
+                        <h5>{{f.fileName}}</h5>
+                        <img style="max-width: 100%; max-height: 100%;" src="{{f.absoluteUri}}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </p-tabPanel>
+
+          <p-tabPanel header="Location" headerStyleClass="{{ getPanelHeaderClass('location') }}">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Longitude / Latitude
+                </div>
+                <div class="ui-grid-col-4">
+                  <div *ngIf="asset.longitude && asset.latitude">
+                    {{ asset.longitude }} , {{ asset.latitude }}
+                  </div>
+                </div>
+                <div class="ui-grid-col-2">
+                  <button pButton type="text" [disabled]="loadingLonLat" (click)="getLonLat($event)" icon="fa-crosshairs" label="Get GPS Coordinates"
+                    style="float: right">
+                  </button>
+                </div>
+                <div class="ui-grid-col-2">
+                  <button pButton type="text" [disabled]="!hasLongLat()" (click)="openMap()" icon="fa-crosshairs" label="View Location" style="float: right"></button>
+                  <input type="hidden" [(ngModel)]="asset.latitude" [formControl]="assetForm.controls['latitude']" />
+                  <input type="hidden" [(ngModel)]="asset.longitude" [formControl]="assetForm.controls['longitude']" />
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Site
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="sites" [style]="{'width':'100%'}" [(ngModel)]="asset.siteId" (onChange)="onSiteChanged($event)" formControlName="siteId"
+                    [autoWidth]="false"></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['siteId'].hasError('required')">
+                    Site is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Site Object
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="siteObjects" [style]="{'width':'100%'}" [(ngModel)]="asset.siteObjectId" formControlName="siteObjectId"
+                    [autoWidth]="false"></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Level
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="locationLevel" placeholder="Location level..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['locationLevel'].hasError('maxlength')">
+                    Level can't be more than 100 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Room
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="locationRoom" placeholder="Location room..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['locationRoom'].hasError('maxlength')">
+                    Room can't be more than 100 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Location Description
+                </div>
+                <div class="ui-grid-col-6">
+                  <textarea pInputTextarea rows="5" cols="30" formControlName="locationDescription" placeholder="Location description..." autoResize="autoResize"></textarea>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['locationDescription'].hasError('maxlength')">
+                    Location description can't be more than 1000 characters
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Lifecycle" headerStyleClass="{{ getPanelHeaderClass('lifecycle') }}">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Manufactured Date
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-calendar id="manufacturedDate" formControlName="manufacturedDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['manufacturedDate'].hasError('dateIsAfterToday')">
+                    The manufactured date provided must be today or earlier
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Installation Date
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-calendar id="installationDate" formControlName="installationDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['installationDate'].hasError('dateIsAfterToday')">
+                        The installation date provided must be today or earlier
+                    </div>
+                  </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Commissioning Date
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-calendar id="commissioningDate" formControlName="commissioningDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                </div>
+                <div class="ui-grid-col-4">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['commissioningDate'].hasError('dateIsAfterToday')">
+                        The commissioning date provided must be today or earlier
+                    </div>
+                  </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Equipment Age
+                </div>
+                <div class="ui-grid-col-6">
+                  <input type="text" pInputText readonly class="aed-input" value="{{ asset.equipmentAge | number:'1.1-2' }} years">
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Equipment Location Age
+                </div>
+                <div class="ui-grid-col-6">
+                  <input type="text" pInputText readonly class="aed-input" value="{{ asset.equipmentLocationAge | number:'1.1-2' }} years">
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Maintenance">
+            <aed-workorder-list [assetId]="asset.id"></aed-workorder-list>
+          </p-tabPanel>
+
+          <p-tabPanel header="Identifiers">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Construction Tag Number
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="constructionTagNumber" placeholder="Construction tag number..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['constructionTagNumber'].hasError('maxlength')">
+                    Construction tag number can't be more that 30 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Serial Number
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="serialNumber" placeholder="Serial number..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['serialNumber'].hasError('required')">
+                    Serial number is required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['serialNumber'].hasError('maxlength')">
+                    Serial number can't be more that 30 characters
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Asset Description
+              </div>
+              <div class="ui-grid-col-6">
+                <textarea pInputTextarea rows="5" cols="30" style="width: 100%" formControlName="description" placeholder="Asset description..."
+                  autoResize="autoResize"></textarea>
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetForm.controls['description'].hasError('maxlength')">
+                  Description can't be more than 1000 characters
+                </div>
+              </div>
+            </div>
+
+            <aed-legacyidentity-list [(legacyIdentities)]="asset.legacyIdentities" (onAddNewLegacyIdentity)="addLegacyIdentity($event)"
+              (onDeleteLegacyIdentity)="deleteLegacyIdentity($event)" (onEditLegacyIdentity)="editLegacyIdentity($event)"></aed-legacyidentity-list>
+
+          </p-tabPanel>
+
+          <p-tabPanel header="Operation">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Maintenance Strategy *
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="asset.maintenanceStrategyTypes" [(ngModel)]="asset.maintenanceStrategy" formControlName="maintenanceStrategy"
+                    [autoWidth]="false">></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Maintenance Plan
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="workInstructions" [(ngModel)]="asset.maintenancePlanId" formControlName="maintenancePlanId" [autoWidth]="false">></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                  <button style="width: 100px" pButton type="text" *ngIf="asset.maintenancePlanId" [routerLink]="['/workinstruction', asset.maintenancePlanId, 'view']"
+                    label="View"></button>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Relationships">
+            <p-dataTable [value]="relationships" *ngIf="relationships && relationships.length > 0">
+              <p-column field="businessRole" header="Asset Relationship" [sortable]="false">
+                <ng-template let-col let-item="rowData" pTemplate="body">
+                  <span>{{ item.businessRoleString() }}</span>
+                </ng-template>
+              </p-column>
+              <p-column field="businessName" header="Business Name"></p-column>
+              <p-column field="contactName" header="Contact Name"></p-column>
+            </p-dataTable>
+          </p-tabPanel>
+
+          <p-tabPanel header="Documents">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+              <p *ngIf="isNewAsset()">You can only add images to an already created Asset</p>
+              <p-fileUpload *ngIf="!isNewAsset()" name="assetFiles[]" showUploadButton="false" showCancelButton="false" url="{{uploadFilesUrl}}"
+                (onUpload)="onUploadFiles($event)" (onError)="onUploadError($event)" (onBeforeSend)="onBeforeSend($event)"
+                (onSelect)="onFileSelected($event)" (onBeforeUpload)="onBeforeUpload($event)" accept="image/*" maxFileSize="5000000">
+                <ng-template let-file pTemplate="file">
+                  <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Name
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" [attr.required]="fileValidationRequired && assetForm.controls['fileName'].value.length == 0"
+                          formControlName="fileName" placeholder="Document name..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && assetForm.controls['fileName'].hasError('maxlength')">
+                          File name can't be more than 100 characters
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && assetForm.controls['fileName'].value.length == 0">
+                          File name is required
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Source
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" [attr.required]="fileValidationRequired  && assetForm.controls['fileSource'].value.length == 0"
+                          formControlName="fileSource" placeholder="Document source..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && assetForm.controls['fileSource'].hasError('maxlength')">
+                          File source can't be more than 100 characters
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && assetForm.controls['fileSource'].value.length == 0">
+                          File source is required
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        Original Name
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.name}}
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Size
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.size / 1000000}} MB
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Type
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.type}}
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </p-fileUpload>
+
+              <p-dataTable [value]="asset.files" *ngIf="asset.files && asset.files.length > 0">
+                <p-column field="fileName" header="Asset Document"></p-column>
+                <p-column field="fileSource" header="Source"></p-column>
+                <p-column>
+                  <ng-template pTemplate="header">
+                    <button type="button" class="ui-button-info aed-button" pButton (click)="showDocumentImages()" label="{{documentImagesButtonText}}"></button>
+                  </ng-template>
+                  <ng-template let-f="rowData" pTemplate="body">
+                    <button type="button" class="ui-button-danger aed-button" pButton (click)="deleteFile(f)" label="Delete"></button>
+                  </ng-template>
+                </p-column>
+              </p-dataTable>
+
+              <div *ngIf="loading == false && displayDocumentImages" class="context-section aedile-datatable">
+                <div class="aed-flex">
+                  <div *ngFor="let f of asset.files" class="aed-flex-item">
+                    <div>
+                      <h5>{{f.fileName}}</h5>
+                      <img style="max-width: 100%; max-height: 100%;" src="{{f.absoluteUri}}">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+
+        <div class="buttons" style="margin: 10px">
+          <button pButton class="ui-button-info aed-button" type="submit" [disabled]="assetForm.pristine" label="Save"></button>
+          <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+        </div>
+
+        <br>
+        <br>
+      </p-panel>
+    </form>
+
+    <div *ngIf="showAddLegacyIdentity">
+      <p-dialog header="Add Legacy Identity" [(visible)]="showAddLegacyIdentity" modal="true" closeOnEscape="true" [width]="getWindowWidth()"
+        [responsive]="true">
+
+        <form [formGroup]="legacyIdentityForm">
+          <p-messages [value]="errors"></p-messages>
+
+          <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+            <!--Asset Reference-->
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Asset Reference *
+              </div>
+              <div class="ui-grid-col-6">
+                <input pInputText type="text" #ref formControlName="name" placeholder="Asset reference..." />
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['name'].hasError('required') && legacyIdentityForm.dirty">
+                  Asset reference is required
+                </div>
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['name'].hasError('maxlength') && legacyIdentityForm.dirty">
+                  Asset reference can't be more than 100 characters
+                </div>
+              </div>
+            </div>
+
+            <!--Reference Source-->
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Reference Source *
+              </div>
+              <div class="ui-grid-col-6">
+                <input pInputText type="text" #refSource formControlName="source" placeholder="Reference source..." />
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['source'].hasError('required') && legacyIdentityForm.dirty">
+                  Reference source is required
+                </div>
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['source'].hasError('maxlength') && legacyIdentityForm.dirty">
+                  Reference source can't be more than 100 characters
+                </div>
+              </div>
+            </div>
+
+            <!--Reference Owner-->
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Reference Owner *
+              </div>
+              <div class="ui-grid-col-6">
+                <input pInputText type="text" #refSource formControlName="owner" placeholder="Reference owner..." />
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['owner'].hasError('required') && legacyIdentityForm.dirty">
+                  Reference owner is required
+                </div>
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="legacyIdentityForm.controls['owner'].hasError('maxlength') && legacyIdentityForm.dirty">
+                  Reference owner can't be more than 100 characters
+                </div>
+              </div>
+            </div>
+          </div>
+          <p-footer>
+            <button pButton class="ui-button-info aed-button" type="button" (click)="addLegacyInfo(legacyIdentityForm.value)" [disabled]="legacyIdentityForm.pristine || legacyIdentityForm.invalid"
+              label="Add"></button>
+            <button pButton class="ui-button-info aed-button" type="button" (click)="showAddLegacyIdentity = false" label="Cancel"></button>
+          </p-footer>
+        </form>
+      </p-dialog>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="topbar clearfix">
+  <div class="topbar-left">
+    <div>
+      <div class="logo"></div>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
+      <i></i>
+    </a>
+    <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)">
+      <i class="material-icons">menu</i>
+    </a>
+    <span *ngIf="isLoggedIn()" class="person-initials pull-right">{{ personInitials() }}</span>
+    <ul class="topbar-items animated fadeInDown" [ngClass]="{'topbar-items-visible': app.topbarMenuActive}">
+      <li #profile class="profile-item" [ngClass]="{'active-top-menu':app.activeTopbarItem === profile}">
+
+        <a href="#" (click)="app.onTopbarItemClick($event, profile)">
+          <i class="topbar-icon material-icons">person</i>
+        </a>
+
+        <ul class="ultima-menu animated fadeInDown">
+          <li role="menuitem" *ngIf="isLoggedIn() && person">
+            <a href="#">
+              <i class="material-icons">person</i>
+              <span>{{ person.userName }}</span>
+            </a>
+          </li>
+          <li role="menuitem" *ngIf="isLoggedIn()">
+            <a (click)="logout()">
+              <i id="logout" class="material-icons">power_settings_new</i>
+              <span>Logout</span>
+            </a>
+          </li>
+          <li role="menuitem" *ngIf="!isLoggedIn()">
+            <a [routerLink]="['login']">
+              <i class="material-icons">mode_edit</i>
+              <span>Login</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false && business" class="container">
+
+  <p-messages [value]="errors"></p-messages>
+
+  <p-panel>
+    <p-header>
+      Business - [Aedile Id: {{ business.identity }}]
+      <button pButton type="button" [routerLink]="['/business', business.id]" label="Edit" style="float: right"></button>
+      <button *ngIf="displayActivateButton" pButton type="button" (click)="activateBusiness()" label=" " [style.background-color]="getActivateButtonBackgroundColor()"
+        style="float: right">{{ business.active === true ? 'Deactivate' : 'Activate' }}</button>
+    </p-header>
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="business.name">
+          <label>Company Name</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="business.tradingName">
+          <label>Trading Name</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="business.businessTypeString()">
+          <label>Business Type</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="business.abn">
+          <label>ABN</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="business.phone">
+          <label>Phone</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="business.businessRoleTypeString()">
+          <label>Business Role</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="business.industryTypeString()">
+          <label>Industry</label>
+        </div>
+      </div>
+    </div>
+    <div class="ui-g">
+      <div class="ui-g-3">
+        <div class="card" style="margin: 3px">
+          <h3 style="color: #d5a940">Street Address</h3>
+          <p>{{ business.streetAddressStreet }}</p>
+          <p>{{ business.streetAddressSuburb }}</p>
+          <p>{{ business.streetAddressPostCode }} {{ business.streetRegionString() }} {{ business.streetCountryString() }}</p>
+        </div>
+      </div>
+      <div class="ui-g-3"></div>
+      <div class="ui-g-3">
+        <div class="card" style="margin: 3px">
+          <h3 style="color: #d5a940">Mail Address</h3>
+          <p>{{ business.mailAddressStreet }}</p>
+          <p>{{ business.mailAddressSuburb }}</p>
+          <p>{{ business.mailAddressPostCode }} {{ business.mailRegionString() }} {{ business.mailCountryString() }}</p>
+        </div>
+      </div>
+      <div class="ui-g-3"></div>
+    </div>
+  </p-panel>
+
+  <br>
+  <div class="row" *ngIf="business.businessRole !== 1">
+    <aed-site-summary-list [businessId]="business.id"></aed-site-summary-list>
+  </div>
+
+  <br>
+  <p-tabView>
+    <p-tabPanel header="Compliances Held">
+      <aed-business-compliance-item-list [showCancelButton]="false" [businessId]="business.id"></aed-business-compliance-item-list>
+    </p-tabPanel>
+    <p-tabPanel header="People">
+      <aed-person-summary-list [showCancelButton]="false" [displayInducteeButton]="true" [businessId]="business.id"></aed-person-summary-list>
+    </p-tabPanel>
+  </p-tabView>
+
+  <br>
+
+  <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+  <br>

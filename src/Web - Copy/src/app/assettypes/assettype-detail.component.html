@@ -1,0 +1,114 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" style="height: 100%">
+  <div class="warnings" style="min-height: 50px" *ngIf="showWarningMessages">
+    <p-messages severity="info" [value]="cantDeleteMessages" *ngIf="!assetType.canDelete && showWarningMessages"></p-messages>
+    <button pButton class="ui-button-danger aed-button" type="text" *ngIf="assetType.canDelete" label="Delete" (click)="deleteAssetType(assetType.id)"></button>
+  </div>
+  <form [formGroup]="assetTypeForm" (ngSubmit)="onSubmit(assetTypeForm.value)">
+    <p-messages [value]="errors"></p-messages>
+
+    <p-panel>
+      <p-header>
+        <div>{{ header }}</div>
+      </p-header>
+
+      <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row aed-row">
+          <div class="ui-grid-col-2">
+            Name
+          </div>
+          <div class="ui-grid-col-6">
+            <input pInputText type="text" formControlName="name" placeholder="Name..." />
+          </div>
+          <div class="ui-grid-col-4">
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetTypeForm.controls['name'].hasError('maxlength') && assetTypeForm.controls['name'].dirty">
+              Name can't be more than 100 characters
+            </div>
+          </div>
+        </div>
+        <div class="ui-grid-row aed-row">
+          <div class="ui-grid-col-2">
+            Trade Type
+          </div>
+          <div class="ui-grid-col-6">
+            <p-dropdown [options]="assetType.tradeTypes" [(ngModel)]="assetType.tradeType" formControlName="tradeType" [autoWidth]="false"></p-dropdown>
+          </div>
+          <div class="ui-grid-col-4">
+          </div>
+        </div>
+        <div class="ui-grid-row aed-row">
+          <div class="ui-grid-col-2">
+            Description
+          </div>
+          <div class="ui-grid-col-6">
+            <textarea pInputTextarea rows="5" cols="10" formControlName="description" placeholder="Description..."></textarea>
+          </div>
+          <div class="ui-grid-col-4">
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetTypeForm.controls['description'].hasError('maxlength') && assetTypeForm.dirty">
+              Description can't be more than 1000 characters
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p-footer>
+      </p-footer>
+    </p-panel>
+
+    <br>
+
+    <p-panel>
+      <p-header>
+        <div>Default Maintenance Plan</div>
+      </p-header>
+      <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+        <div class="ui-grid-row aed-row">
+          <div class="ui-grid-col-2">
+            Default Maintenance Plan
+          </div>
+          <div class="ui-grid-col-6">
+            <p-dropdown [options]="workInstructions" formControlName="workInstruction" [style]="{'width':'100%'}" filter="filter">
+              <ng-template let-wi pTemplate="item">
+                <div class="ui-helper-clearfix">
+                  <div>{{wi.label}}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div class="ui-grid-col-4">
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <p-panel>
+      <p-header>
+        <div>Specific Attibutes</div>
+      </p-header>
+      <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row aed-row">
+          <div class="ui-g-12">
+            <div *ngFor="let sa of specificAttributeDisplayNames" class="ui-g-3">
+              <p-checkbox name="specificAttributeGroup" value="{{sa}}" label="{{sa}}" [(ngModel)]="selectedSpecificAttributeNames" formControlName="selectedSpecificAttributeNames"
+                (onChange)="oc($event, sa)"></p-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </p-panel>
+
+    <br>
+
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="assetTypeForm.pristine || assetTypeForm.invalid"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="cancel()" label="Cancel"></button>
+    </div>
+
+  </form>
+</div>

@@ -1,0 +1,35 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+
+  <p-messages [value]="errors"></p-messages>
+
+  <div *ngIf="manufacturer">
+
+    <p-panel header="Manufacturer Details">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="manufacturer.name">
+            <label>Manufacturer Name</label>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <p-panel header="Models [{{ manufacturer.models.length || 0 }}]">
+      <p-dataTable [value]="manufacturer.models" *ngIf="manufacturer.models.length > 0">
+        <p-column field="name" header="Model Name"></p-column>
+        <p-column field="manufacturerName" header="Manufacturer Name"></p-column>
+        <p-column field="assetTypeName" header="Asset Type Name"></p-column>
+      </p-dataTable>
+    </p-panel>
+
+    <br>
+
+    <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+    <br>
+  </div>

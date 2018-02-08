@@ -1,0 +1,41 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <p-messages [value]="errors"></p-messages>
+  <h2>List of People ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [responsive]="true" [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]"
+    [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search People">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-user-plus" iconPos="right" label="Add Person" [routerLink]="['/people/add', this.businessId]"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="firstName" header="First Name " [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="lastName" header="Last Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="businessName" header="Business Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="createdDate" header="Created Date" [sortable]="true">
+      <ng-template let-col let-person="rowData" pTemplate="body">
+        <span>{{person[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-person="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/people', person.id]" icon="fa-edit" title="Edit Person"></button>
+        <button pButton type="text" [routerLink]="['/people', person.id, 'view']" icon="fa-eye" title="View Person"></button>
+        <button pButton *ngIf="displayInducteeButton" type="text" [routerLink]="['/business', person.businessId, 'inductee', person.id]" icon="fa-check-square"
+          [disabled]="inducteeButtonDisabled(person)" [style.background-color]="getInducteeButtonBackgroundColor(person)" title="Add Inductee"></button>
+        <button pButton type="text" [disabled]="loading" *ngIf="person.active" (click)="onActivate(person)" icon="fa-times" style="background-color: red"
+          title="Deactivate Person"></button>
+        <button pButton type="text" [disabled]="loading" *ngIf="!person.active" (click)="onActivate(person)" icon="fa-check" style="background-color: green"
+          title="Activate Person"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br>
+  <button pButton class="ui-button-info aed-button" *ngIf="showCancelButton" type="button" (click)="goBack()" label="Cancel"></button>
+  <br>
+</div>

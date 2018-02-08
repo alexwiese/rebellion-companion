@@ -1,0 +1,68 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <h2>Work Orders ({{ numberOfItems }})</h2>
+  <p-dataTable id="workorder-datatable" [value]="items" selectionMode="single" [(selection)]="selectedItem" [responsive]="true" [rows]="20" [paginator]="true"
+    [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]" [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Work Orders">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Work Order" [routerLink]="['/workorder/add', assetId || '']"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="siteIdentity" header="Site Id" [filter]="false" [sortable]="true"></p-column>
+    <p-column field="siteName" header="Site Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="siteObjectIdentity" header="Site Object Id" [filter]="false" [sortable]="true"></p-column>
+    <p-column field="siteObjectName" header="Site Object Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="name" header="Work Order Name" [sortable]="true"></p-column>
+    <p-column field="type" [filter]="true" header="Type" [sortable]="false">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{ item.typeString() }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="identity" header="Work Order Id" [sortable]="true"></p-column>
+    <p-column field="requiredDate" header="Required Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="startDate" header="Start Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="completedDate" header="Completed Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="status" [filter]="true" header="Status" [sortable]="false">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{ item.statusString() }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="priority" [filter]="true" header="Priority" [sortable]="false">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{ item.priorityString() }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="businessName" header="Assigned Business" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="assetIdentity" header="Asset Id" [sortable]="false">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{ item[col.field] ? item[col.field] : 'No Asset' }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="resource" header="Resource" [filter]="true" [sortable]="true"></p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-item="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/workorder', item.id]" icon="fa-edit" title="Edit"></button>
+        <button pButton type="text" [routerLink]="['/workorder', item.id, 'view']" icon="fa-eye" title="View"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</div>

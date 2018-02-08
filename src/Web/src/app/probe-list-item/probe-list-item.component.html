@@ -1,0 +1,4 @@
+<mat-list-item class="system-row" ngClass.gt-sm="large">
+  <p matLine>{{system.name}}</p>
+  <img src="assets/icons/probe.png" class="system-icon" [ngClass]="{'set':system.probed}" (click)="clicked()">
+</mat-list-item>

@@ -1,0 +1,84 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="workInstruction">
+
+    <!--Work Instruction Panel-->
+    <p-panel header="Work Instruction Details">
+      <div class="ui-g form-group">
+        <!--Type -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workInstruction.typeString()">
+            <label>Type of Work Instruction</label>
+          </div>
+        </div>
+
+        <!--IsDefault -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="isDefault()">
+            <label>Is Default Plan</label>
+          </div>
+        </div>
+
+        <!--Contrct -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input">
+            <label>Contract</label>
+          </div>
+        </div>
+
+        <!--Name -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workInstruction.name">
+            <label>Name</label>
+          </div>
+        </div>
+
+        <!--Code -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workInstruction.code">
+            <label>Code</label>
+          </div>
+        </div>
+
+        <!--Source -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workInstruction.source">
+            <label>Source</label>
+          </div>
+        </div>
+
+        <!--Description -->
+        <div class="ui-g-12">
+          <label class="aed-label">Description</label>
+          <div class="md-inputfield">
+            <textarea pInputTextarea readonly autocomplete="off" class="aed-input" [ngModel]="workInstruction.description" autoResize="autoResize"></textarea>
+          </div>
+        </div>
+
+        <!--Asset Types -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="assetTypesString()">
+            <label>Asset Types</label>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <!--Buttons-->
+    <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+    <br>
+  </div>
+</div>

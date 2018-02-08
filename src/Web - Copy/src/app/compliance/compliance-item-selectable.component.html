@@ -1,0 +1,9 @@
+<p-autoComplete id="complianceItems" [(ngModel)]="selectedComplianceItems" [suggestions]="filteredComplianceItems" (completeMethod)="filterComplianceItems($event)"
+  [size]="100" [minLength]="1" placeholder="Type compliance item name" field="name" [dropdown]="true" (onDropdownClick)="handleDropdownClick($event)"
+  multiple="true" (onSelect)="selectComplianceItem($event)" (onUnselect)="unselectComplianceItem($event)">
+  <ng-template let-compliance pTemplate="item">
+    <div class="ui-helper-clearfix">
+      <div style="font-size:18px;float:right;margin:10px 10px 0 0">{{compliance.name}}</div>
+    </div>
+  </ng-template>
+</p-autoComplete>

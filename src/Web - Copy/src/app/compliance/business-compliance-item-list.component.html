@@ -1,0 +1,45 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <p-dataTable [value]="items" selectionMode="single" [(selection)]="selectedItem" [responsive]="true" [rows]="20" [paginator]="true"
+    [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]" [rowStyleClass]="highlightRow" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Compliance Item" [routerLink]="['/businesscomplianceitemheld/add', businessId]"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="type" header="Type" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{ item.typeString }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="complianceItemName" header="Compliance Item Name" [sortable]="true"></p-column>
+    <p-column field="reference" header="Reference" [sortable]="true"></p-column>
+    <p-column field="startDate" header="Start Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="expiryDate" header="Expiry Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="isVerified" header="Verified?" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <p-inputSwitch [disabled]="true" [(ngModel)]="item.isVerified"></p-inputSwitch>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-item="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/businesscomplianceitemheld', item.id]" icon="fa-edit" title="Edit Compliance Item Held"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br>
+  <button pButton *ngIf="showCancelButton" class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+  <br>
+</div>

@@ -1,0 +1,282 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+    <form [formGroup]="siteObjectForm" (ngSubmit)="onSubmit(siteObjectForm.value)">
+
+      <p-messages [value]="errors"></p-messages>
+
+      <p-panel>
+        <p-header>
+          <h3 *ngIf="siteObjectId">Edit {{ siteObject.name }} ({{ siteObject.businessName }} - {{ siteObject.siteName }}) 
+            - [Aedile Id: {{ siteObject.identity }}] </h3>
+          <h3 *ngIf="!siteObjectId">Add {{ siteObjectTypeName }} ({{ siteObject.businessName }} - {{ siteObject.siteName }})</h3>
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['name'].hasError('required') && siteObjectForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['name'].hasError('maxlength') && siteObjectForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['name'].hasError('siteObjectNameExistsValidator') && siteObjectForm.dirty">
+                This site object name exists for this business/site already
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Code
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="code" placeholder="Code..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['code'].hasError('maxlength') && siteObjectForm.dirty">
+                Code can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Legacy Id
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="legacyId" placeholder="Legacy Id..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['legacyId'].hasError('maxlength') && siteObjectForm.dirty">
+                Legacy Id can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Type *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="siteObject.types" [(ngModel)]="siteObject.type" formControlName="type" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Building Type
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="siteObject.buildingTypes" [(ngModel)]="siteObject.buildingType" formControlName="buildingType" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row" *ngIf="siteObject.type == 0">
+            <div class="ui-grid-col-2">
+              Number Of Floors
+            </div>
+            <div class="ui-grid-col-6">
+              <p-spinner formControlName="numberOfFloors" [min]="0" [step]="1" placeholder="Number of floors..."></p-spinner>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              NLA (Net Lettable Area)
+            </div>
+            <div class="ui-grid-col-6">
+              <p-spinner formControlName="netLettableArea" [min]="0.0" [step]="0.1" placeholder="Net lettable area..."></p-spinner>
+            </div>
+            <div class="ui-grid-col-4">
+              sqm
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              TFA (Total Floor Area)
+            </div>
+            <div class="ui-grid-col-6">
+              <p-spinner formControlName="totalFloorArea" [min]="0.0" [step]="0.1" placeholder="Total floor area..."></p-spinner>
+            </div>
+            <div class="ui-grid-col-4">
+              sqm
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Street *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="addressStreet" placeholder="Address number..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressStreet'].hasError('required') && siteObjectForm.dirty">
+                Street is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressStreet'].hasError('maxlength') && siteObjectForm.dirty">
+                Street can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Suburb *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="addressSuburb" placeholder="Address suburb..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressSuburb'].hasError('required') && siteObjectForm.dirty">
+                Suburb is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressSuburb'].hasError('maxlength') && siteObjectForm.dirty">
+                Suburb can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Postcode *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="addressPostcode" placeholder="Address postcode..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressPostcode'].hasError('maxlength') && siteObjectForm.dirty">
+                Postcode must be 4 digits
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressPostcode'].hasError('minlength') && siteObjectForm.dirty">
+                Postcode must be 4 digits
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressPostcode'].hasError('required') && siteObjectForm.dirty">
+                Postcode is required
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              State
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="siteObject.regions" [(ngModel)]="siteObject.addressRegion" formControlName="addressRegion" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressRegion'].hasError('required') && siteObjectForm.dirty">
+                State is required
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Country
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="siteObject.countries" [(ngModel)]="siteObject.addressCountry" formControlName="addressCountry" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['addressCountry'].hasError('required') && siteObjectForm.dirty">
+                Country is required
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <p-panel header="Contact Details">
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Point of Contact Name
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="pointOfContactName" placeholder="Point of contact name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['pointOfContactName'].hasError('maxlength') && siteObjectForm.dirty">
+                Point of contact name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contact Number
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contactNumber" placeholder="Contact number..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['contactNumber'].hasError('maxlength') && siteObjectForm.dirty">
+                Contact number can't be more than 10 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Parking Details
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="30" formControlName="parkingDetails" placeholder="Parking details..." autoResize="autoResize">
+              </textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['parkingDetails'].hasError('maxlength') && siteObjectForm.dirty">
+                Parking details can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Additional Information
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="30" formControlName="additionalInformation" placeholder="Additional information..."
+                autoResize="autoResize">
+              </textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteObjectForm.controls['additionalInformation'].hasError('maxlength') && siteObjectForm.dirty">
+                Additional information can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="siteObjectForm.pristine" label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+  </div>
+</div>

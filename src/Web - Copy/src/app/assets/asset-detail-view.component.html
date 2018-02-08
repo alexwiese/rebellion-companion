@@ -1,0 +1,147 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="asset">
+
+    <!--Asset Panel-->
+    <p-panel header="Asset Details">
+      <div class="ui-g form-group">
+        <!--Barcode-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="asset.barcode">
+            <label>Barcode</label>
+          </div>
+        </div>
+
+        <!--Construction Tag Number-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="asset.constructionTagNumber">
+            <label>Construction Tag Number</label>
+          </div>
+        </div>
+
+        <!--Serial Number-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="asset.serialNumber">
+            <label>Serial Number</label>
+          </div>
+        </div>
+
+        <!--Asset Type-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="asset.assetTypeName">
+            <label>Asset Type</label>
+          </div>
+        </div>
+
+        <!--Asset Name-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="asset.name">
+            <label>Asset Name</label>
+          </div>
+        </div>
+
+        <!--Asset Status-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [value]="asset.assetStatusString">
+            <label>Asset Name</label>
+          </div>
+        </div>
+
+        <!--Asset Criticality-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [value]="asset.assetCriticalityString">
+            <label>Asset Criticality</label>
+          </div>
+        </div>
+
+        <!--Asset Condition-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [value]="asset.assetConditionString">
+            <label>Asset Condition</label>
+          </div>
+        </div>
+
+        <!--Base Date-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ asset.baseDate | date: 'dd/MM/yyyy' }}">
+            <label>Base Date</label>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <!--Asset Location Panel-->
+    <p-panel>
+      <p-header>
+        Location Details
+        <button pButton type="text" [disabled]="!hasLongLat()" (click)="openMap()" icon="fa-crosshairs" label="View Location" style="float: right">
+        </button>
+      </p-header>
+      <div class="ui-g form-group">
+
+        <!--Location Level-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ asset.locationLevel }}">
+            <label>Location Level</label>
+          </div>
+        </div>
+
+        <!--Location Room-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ asset.locationRoom }}">
+            <label>Location Room</label>
+          </div>
+        </div>
+
+        <!--Location Description-->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ asset.locationDescription }}">
+            <label for="locationDescription">Location Description</label>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <!--Photos / Documents Panel-->
+    <p-panel>
+      <p-header>
+        Photos / Documents
+      </p-header>
+      <div *ngIf="loading == false" class="context-section aedile-datatable">
+        <div class="aed-flex">
+          <div *ngFor="let f of asset.files" class="aed-flex-item">
+            <div>
+              <h5>{{f.fileName}}</h5>
+              <img style="max-width: 100%; max-height: 100%;" src="{{f.absoluteUri}}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <!--Buttons-->
+    <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+    <br>
+  </div>

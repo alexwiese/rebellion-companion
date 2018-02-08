@@ -1,0 +1,74 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+    <form [formGroup]="complianceForm" (ngSubmit)="onSubmit(complianceForm.value)">
+      <p-messages [value]="errors"></p-messages>
+      <p-panel>
+        <p-header>
+          <div *ngIf="complianceItemId">Edit {{ complianceItem.name }}</div>
+          <div *ngIf="!complianceItemId">Add Compliance Item</div>
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="complianceForm.controls['name'].hasError('required') && complianceForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="complianceForm.controls['name'].hasError('maxlength') && complianceForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Type *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="complianceItem.types" [(ngModel)]="complianceItem.type" formControlName="type" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Level *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="complianceItem.levels" [(ngModel)]="complianceItem.level" formControlName="level" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Issuing Authority *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="issuingAuthority" placeholder="Issuing authority..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="complianceForm.controls['issuingAuthority'].hasError('required') && complianceForm.dirty">
+                Issuing authority is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="complianceForm.controls['issuingAuthority'].hasError('maxlength') && complianceForm.dirty">
+                Issuing authority can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+      <br>
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="complianceForm.pristine || complianceForm.invalid"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+      <br>
+    </form>
+  </div>
+</div>

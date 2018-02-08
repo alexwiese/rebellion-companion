@@ -1,0 +1,175 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+
+  <h2>Work Instructions Tasks ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [(selection)]="selectedItem" (onRowSelect)="onRowSelect($event)" [responsive]="true"
+    [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]" [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Work Instruction Tasks">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Work Instruction Task" (click)="onCreateNewTask()"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="taskNumber" header="Number" [sortable]="true"></p-column>
+    <p-column field="description" header="Description" [sortable]="true"></p-column>
+    <p-column field="serviceFrequenciesSummary" header="Frequencies" [sortable]="true"></p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-item="rowData" pTemplate="body">
+        <button pButton type="text" (click)="onEditWorkInstructionTask(item); false" icon="fa-edit" title="Edit"></button>
+        <button pButton type="text" [disabled]="loading" *ngIf="item.active" (click)="onActivate(item); false" icon="fa-check" style="background-color: red"
+          title="Deactivate"></button>
+        <button pButton type="text" [disabled]="loading" *ngIf="!item.active" (click)="onActivate(item); false" icon="fa-times" style="background-color: green"
+          title="Activate"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+    <p-dialog header="Work Instruction Task" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+      [width]="getWindowWidth()" [height]="getWindowHeight()">
+      <form *ngIf="displayDialog" [formGroup]="workInstructionTaskForm" (ngSubmit)="onSubmit(workInstructionTaskForm.value)">
+        <p-messages [value]="errors"></p-messages>
+
+        <p-panel>
+          <p-header>
+            <div *ngIf="workInstructionId">Edit {{ workInstructionTask.description }}</div>
+            <div *ngIf="!workInstructionId">Add Work Instruction Task</div>
+          </p-header>
+          <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Task Number *
+              </div>
+              <div class="ui-grid-col-6">
+                <p-spinner formControlName="taskNumber" [min]="0.10" [step]="0.10" placeholder="Task Number..."></p-spinner>
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionTaskForm.controls['taskNumber'].hasError('required') && workInstructionTaskForm.dirty">
+                  Task Number is required
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Is Mandatory
+              </div>
+              <div class="ui-grid-col-1">
+                <p-toggleButton formControlName="isMandatory" onLabel="Yes" offLabel="No"></p-toggleButton>
+              </div>
+              <div class="ui-grid-col-9">
+              </div>
+            </div>
+
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Description
+              </div>
+              <div class="ui-grid-col-6">
+                <textarea pInputTextarea rows="5" cols="30" formControlName="description" placeholder="Description..." autoResize="autoResize"></textarea>
+              </div>
+              <div class="ui-grid-col-4">
+                <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionTaskForm.controls['description'].hasError('maxlength') && workInstructionTaskForm.dirty">
+                  Description can't be more than 1000 characters
+                </div>
+              </div>
+            </div>
+
+            <div class="ui-grid-row aed-row">
+              <div class="ui-grid-col-2">
+                Type *
+              </div>
+              <div class="ui-grid-col-6">
+                <p-dropdown [options]="workInstructionTask.types" [(ngModel)]="workInstructionTask.type" formControlName="type" [autoWidth]="false"></p-dropdown>
+              </div>
+              <div class="ui-grid-col-4">
+              </div>
+            </div>
+
+          </div>
+        </p-panel>
+
+        <br>
+
+        <p-panel *ngIf="canViewServiceDetails()">
+          <p-header>
+            <div>Service Details</div>
+          </p-header>
+          <p-tabView>
+            <p-tabPanel header="Service Frequency">
+              <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+                <div class="ui-grid-row aed-row">
+                  <div class="ui-g-12">
+                    <div *ngFor="let f of frequencyNames" class="ui-g-3">
+                      <p-checkbox name="frequencyGroup" value="{{f}}" label="{{f}}" [(ngModel)]="selectedFrequencyNames" formControlName="selectedFrequencyNames"
+                        (onChange)="oc($event, f)"></p-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-tabPanel>
+            <p-tabPanel header="Service Value" style="min-height: 200px">
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-3">
+                  Is Required
+                </div>
+                <div class="ui-grid-col-3">
+                  <p-toggleButton formControlName="isServiceValueRequired" onLabel="Yes" offLabel="No"></p-toggleButton>
+                </div>
+                <div class="ui-grid-col-6">
+                </div>
+              </div>
+              <div class="ui-grid-row aed-row">
+
+                <div class="ui-grid-col-3">
+                  Service Value Name
+                </div>
+                <div class="ui-grid-col-3">
+                  <p-dropdown [options]="serviceValueNames" [(ngModel)]="workInstructionTask.serviceValueName" formControlName="serviceValueName"
+                    [autoWidth]="false"></p-dropdown>
+                </div>
+                <div class="ui-grid-col-6">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionTaskForm.controls['serviceValueName'].hasError('serviceValueRequired') && workInstructionTaskForm.dirty">
+                    Work Instruction Task requires a service value name
+                  </div>
+                </div>
+              </div>
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-3">
+                  Service Value Unit of Measure
+                </div>
+                <div class="ui-grid-col-3">
+                  <p-dropdown [options]="serviceValueUoms" [(ngModel)]="workInstructionTask.serviceValueUnitOfMeasure" formControlName="serviceValueUnitOfMeasure"
+                    [autoWidth]="false"></p-dropdown>
+                </div>
+                <div class="ui-grid-col-6">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionTaskForm.controls['serviceValueUnitOfMeasure'].hasError('serviceValueRequired') && workInstructionTaskForm.dirty">
+                    Work Instruction Task requires a service value unit of measure
+                  </div>
+                </div>
+              </div>
+            </p-tabPanel>
+          </p-tabView>
+        </p-panel>
+
+        <br>
+        <button pButton *ngIf="showSaveTextOnButton()" class="ui-button-info aed-button" type="submit" [disabled]="workInstructionTaskForm.pristine || workInstructionTaskForm.invalid"
+          label="Save"></button>
+        <button pButton *ngIf="!showSaveTextOnButton()" class="ui-button-info aed-button" type="submit" [disabled]="workInstructionTaskForm.pristine || workInstructionTaskForm.invalid"
+          label="Add"></button>
+        <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+        <br>
+      </form>
+    </p-dialog>
+  </div>
+</div>

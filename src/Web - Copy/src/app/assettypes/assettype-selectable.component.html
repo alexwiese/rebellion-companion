@@ -1,0 +1,10 @@
+<p-autoComplete id="assetTypes" [(ngModel)]="selectedAssetTypes" [suggestions]="filteredAssetTypes" (completeMethod)="filterAssetTypes($event)"
+  [size]="100" [minLength]="1" placeholder="Asset type name" field="name" [dropdown]="true" (onDropdownClick)="handleDropdownClick($event)"
+  multiple="true" (onSelect)="selectAssetType($event)" (onUnselect)="unselectAssetType($event)" (onBlur)="handleOnBlur($event)">
+  <ng-template let-assettype pTemplate="item">
+    <div class="ui-helper-clearfix">
+      <div style="font-size:18px;float:right;margin:10px 10px 0 0">{{ assettype.name }}</div>
+    </div>
+  </ng-template>
+</p-autoComplete>
+

@@ -1,0 +1,310 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+
+    <form [formGroup]="contractForm" (ngSubmit)="onSubmit(contractForm.value)">
+      <p-messages [value]="errors"></p-messages>
+
+      <!--Principal Details-->
+      <p-panel>
+        <p-header>
+          <div>Principal Details</div>
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <input id="active" formControlName="active" name="active" type="hidden" class="form-control" [formControl]="contractForm.controls['active']"
+          />
+
+          <!-- Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contract Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Contract Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['name'].hasError('required') && contractForm.dirty">
+                Contract Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['name'].hasError('maxlength') && contractForm.dirty">
+                Contract Name can't be more than 100 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['name'].hasError('contractNameExistsValidator') && contractForm.dirty">
+                Contract Name already exists
+              </div>
+            </div>
+          </div>
+
+          <!--Business Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Business Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="assetOwnerBusinesses" [(ngModel)]="contract.contactBusinessId" formControlName="contactBusinessId"
+                [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Contact Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contact Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contactName" placeholder="Contact Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactName'].hasError('required') && contractForm.dirty">
+                Contact Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactName'].hasError('maxlength') && contractForm.dirty">
+                Contact Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Contact Phone-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contact Phone *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contactPhone" placeholder="Contact Phone..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactPhone'].hasError('required') && contractForm.dirty">
+                Contact Phone is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactPhone'].hasError('maxlength') && contractForm.dirty">
+                Contact Phone can't be more than 20 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Contact Email-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contact Email *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contactEmail" placeholder="Contact Email..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactEmail'].hasError('required') && contractForm.dirty">
+                Contact Email is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contactEmail'].hasError('maxlength') && contractForm.dirty">
+                Contact Email can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Contractor Details-->
+      <p-panel>
+        <p-header>
+          <div>Contractor Details</div>
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Business Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Business Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="assetMaintainerBusinesses" [(ngModel)]="contract.contractorBusinessId" formControlName="contractorBusinessId"
+                [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Contractor Role-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Relationship *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="contract.roles" [(ngModel)]="contract.contractorRole" formControlName="contractorRole" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Contractor Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contractor Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contractorName" placeholder="Contractor Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorName'].hasError('required') && contractForm.dirty">
+                Contractor Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorName'].hasError('maxlength') && contractForm.dirty">
+                Contractor Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Contractor Phone-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contractor Phone *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contractorPhone" placeholder="Contractor Phone..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorPhone'].hasError('required') && contractForm.dirty">
+                Contractor Phone is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorPhone'].hasError('maxlength') && contractForm.dirty">
+                Contractor Phone can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Contractor Email-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contractor Email *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="contractorEmail" placeholder="Contractor Email..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorEmail'].hasError('required') && contractForm.dirty">
+                Contractor Email is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorEmail'].hasError('maxlength') && contractForm.dirty">
+                Contractor Email can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Contractor Dates-->
+      <p-panel>
+        <p-header>
+          <div>Contractor Dates</div>
+        </p-header>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Tender Submission Date-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Tender Submission Date *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="tsd" formControlName="tenderSubmissionDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['tenderSubmissionDate'].hasError('required') && contractForm.controls['tenderSubmissionDate'].dirty">
+                Tender Submission Date is required
+              </div>
+            </div>
+          </div>
+
+          <!--Contractor Award Date-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Contractor Award Date *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="cad" formControlName="contractorAwardDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['contractorAwardDate'].hasError('required') && contractForm.controls['contractorAwardDate'].dirty">
+                Contractor Award Date is required
+              </div>
+            </div>
+          </div>
+
+          <!--Start Date-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Start Date *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="startDate" formControlName="startDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['startDate'].hasError('required') && contractForm.controls['startDate'].dirty">
+                Start Date is required
+              </div>
+            </div>
+          </div>
+
+          <!--End Date-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              End Date *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="endDate" formControlName="endDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="contractForm.controls['endDate'].hasError('required') && contractForm.controls['endDate'].dirty">
+                End Date is required
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+      <p-panel>
+        <p-header>
+          Photos / Documents
+        </p-header>
+        <p *ngIf="isNewContract()">You can only add images to an already created Contract</p>
+        <p-fileUpload *ngIf="!isNewContract()" name="contractFiles[]" url="{{ uploadFilesUrl}}" (onUpload)="onUploadFiles($event)"
+          (onError)="onUploadError($event)" (onBeforeSend)="onBeforeSend($event)" multiple="multiple" accept="image/*" maxFileSize="5000000">
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+              <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size / 1000000}} MB</li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+        <div *ngIf="loading == false" class="context-section aedile-datatable">
+          <div class="aed-flex">
+            <div *ngFor="let f of contract.files" class="aed-flex-item">
+              <img style="max-width: 100%; max-height: 100%;" src="{{f.displayUri}}">
+              <button pButton class="ui-button-danger aed-button" type="button" (click)="deleteFile(f)" label="Delete"></button>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Buttons-->
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="contractForm.pristine"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+  </div>
+</div>

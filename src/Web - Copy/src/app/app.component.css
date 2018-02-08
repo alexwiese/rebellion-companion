@@ -1,0 +1,54 @@
+.colorbox i {
+  font-size: 48px;
+  margin-top: 10px;
+  color: #ffffff;
+}
+
+.colorbox .colorbox-name {
+  font-size: 20px;
+  display: inline-block;
+  width: 100%;
+  margin: 4px 0 10px 0;
+  color: #ffffff;
+}
+
+.colorbox .colorbox-count {
+  color: #ffffff;
+  font-size: 36px;
+}
+
+.colorbox .colorbox-count {
+  font-weight: bold;
+}
+
+.colorbox.colorbox-total div:first-child {
+  background-color: #fdce1e;
+}
+
+.colorbox.colorbox-total div:last-child {
+  background-color: #d5a940;
+}
+
+.colorbox.colorbox-2 div:first-child {
+  background-color: #0277BD;
+}
+
+.colorbox.colorbox-2 div:last-child {
+  background-color: #03A9F4;
+}
+
+.colorbox.colorbox-3 div:first-child {
+  background-color: #4527A0;
+}
+
+.colorbox.colorbox-3 div:last-child {
+  background-color: #673AB7;
+}
+
+.colorbox.colorbox-4 div:first-child {
+  background-color: #00695C;
+}
+
+.colorbox.colorbox-4 div:last-child {
+  background-color: #009688;
+}

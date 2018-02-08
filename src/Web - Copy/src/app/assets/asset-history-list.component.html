@@ -1,0 +1,34 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+
+  <h2>{{ getHeaderInfo(dt, "Asset History") }}</h2>
+
+  <p-dataTable id='asset-datatable' [value]="items" selectionMode="single" [(selection)]="selectedItem" [responsive]="true"
+    [rows]="30" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[20,30,50]" [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Assets">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+      </div>
+    </p-header>
+
+    <p-column field="name" header="Asset Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetStatusString" header="Asset Status" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetCriticalityString" header="Asset Criticality" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetConditionString" header="Asset Condition" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="maintenanceStrategyString" header="Maintenance Strategy" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="businessName" header="Business Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="lastVerifiedStatusString" header="Last Verified Status" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="lastVerifiedBy" header="Last Verified By" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="lastVerifiedDate" header="Last Verified Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br><button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button><br>
+</div>

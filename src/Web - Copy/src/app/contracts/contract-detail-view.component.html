@@ -1,0 +1,102 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false && contract" class="container">
+
+  <p-messages [value]="errors"></p-messages>
+
+  <p-panel>
+    <p-header>
+      Contract - {{ contract.name }}
+      <button pButton type="button" [routerLink]="['/contract', contract.id]" label="Edit" style="float: right"></button>
+    </p-header>
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="contract.name">
+          <label>Contract Name</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <p-panel>
+          <p-header>
+            Contact Details
+          </p-header>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contactBusinessName">
+                <label>Contact Business Name</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contactName">
+                <label>Contact Name</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contactPhone">
+                <label>Contact Phone</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contactEmail">
+                <label>Contact Email</label>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+
+      <div class="ui-g-12">
+        <p-panel>
+          <p-header>
+            Contractor Details
+          </p-header>
+          <div class="ui-g form-group">
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contractorBusinessName">
+                <label>Contractor Business</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contractRoleString">
+                <label>Contractor Relationship</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contractorName">
+                <label>Contractor Name</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contractorPhone">
+                <label>Contractor Phone</label>
+              </div>
+            </div>
+            <div class="ui-g-12">
+              <div class="md-inputfield">
+                <input type="text" pInputText readonly class="aed-input" [value]="contract.contractorEmail">
+                <label>Contractor Email</label>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+
+    </div>
+  </p-panel>
+
+  <br>
+
+  <!--Buttons-->
+  <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+  <br>

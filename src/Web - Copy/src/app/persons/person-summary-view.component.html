@@ -1,0 +1,54 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false && person" class="container">
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+
+  <!--Panel-->
+  <p-panel header="View {{ person.firstName }} {{ person.lastName }} ({{ person.businessName }})">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="person.fullName">
+          <label>Name</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="person.email">
+            <label>Email</label>
+        </span>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="person.phoneNumber">
+            <label>Phone Number</label>
+        </span>
+      </div>
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="person.roleString">
+            <label>Role</label>
+        </span>
+      </div>
+      <div class="ui-g-12" *ngIf="person.supervisorPermissions">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="person.supervisorPermissions">
+            <label>Supervisor Permissions</label>
+        </span>
+      </div>
+      <div class="ui-g-12" *ngIf="person.fieldWorkerPermissions">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="person.fieldWorkerPermissions">
+            <label>Fieldworker Permissions</label>
+        </span>
+      </div>
+
+      <div class="ui-g-12">
+        <button pButton type="button" class="ui-button-info aed-button" (click)="editPerson()" label="Edit" [disabled]="loading"></button>
+        <button pButton type="button" class="ui-button-info aed-button" [routerLink]="['/peoplelist']" label="People"></button>
+        <button pButton type="button" class="ui-button-success aed-button" label="{{ activateLabel(person) }}" [ngClass]="{'ui-button-danger' : person.active }" (click)="activatePerson(person)"></button>
+      </div>
+    </div>
+  </p-panel>
+</div>

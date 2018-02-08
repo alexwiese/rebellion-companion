@@ -1,0 +1,23 @@
+<p-messages [value]="uploadResultErrors" *ngIf="uploadResultErrors.length > 0"></p-messages>
+<p-messages [value]="uploadResultSuccesses" *ngIf="uploadResultSuccesses.length > 0"></p-messages>
+<p-messages [value]="errors" *ngIf="errors.length > 0"></p-messages>
+
+<p-panel>
+  <p-header>
+    Asset Register
+  </p-header>
+  <p-fileUpload mode="basic" [hidden]="uploadingFile" name="assetRegister" url="{{uploadFilesUrl}}" accept=".csv,text/csv"
+    maxFileSize="1000000" chooseLabel="Choose File" (onError)="onError($event)" (onBeforeSend)="onBeforeSend($event)"
+    (onUpload)="onUpload($event)" (onBeforeUpload)="onBeforeUpload($event)"></p-fileUpload>
+  <h3 *ngIf="uploadingFile">Loading file...</h3>
+</p-panel>
+
+<br>
+<p-panel header="Errors ({{ errorMessages.length }})" *ngIf="errorMessages.length > 0 || fileUploaded">
+  <p-dataTable [value]="errorMessages" [paginator]="true" [rows]="50" [globalFilter]="gb" #dt>
+    <p-column field="text" header="Message" [sortable]="true"></p-column>
+  </p-dataTable>
+  <br>
+  <button pButton class="ui-button-info aed-button" type="button" (click)="saveAssetUploads()" label="Run Import"></button>
+  <br><br>
+</p-panel>

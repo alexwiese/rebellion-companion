@@ -1,0 +1,62 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+
+  <h3>'New' Asset to merge:</h3>
+
+  <div class="ui-g form-group">
+    <div class="ui-g-12">
+      <div class="md-inputfield">
+        <input type="text" pInputText readonly class="aed-input" [ngModel]="fromWorkOrderAsset.name">
+        <label>Name</label>
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="md-inputfield">
+        <input type="text" pInputText readonly class="aed-input" [ngModel]="fromWorkOrderAsset.barcode">
+        <label>Barcode</label>
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <div class="md-inputfield">
+        <input type="text" pInputText readonly class="aed-input" [ngModel]="fromWorkOrderAsset.identity">
+        <label>Identity</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Select an Asset to merge with from the list below before clicking the Merge button:</h3>
+  <div class="ui-grid-row aed-row">
+    <p-dataTable (onRowSelect)="onAssetSelect($event)" [value]="workOrder.assets" selectionMode="single" [responsive]="true"
+      [globalFilter]="gb" #dt>
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+          <input #gb type="text" class="white-input" id="filter" pInputText size="50" style="float: left" placeholder="Search Assets">
+        </div>
+      </p-header>
+      <p-column field="barcode" header="Barcode" [sortable]="true"></p-column>
+      <p-column field="assetTypeName" header="Asset Type" [sortable]="true"></p-column>
+      <p-column field="name" header="Asset Name" [sortable]="true"></p-column>
+      <p-column field="locationLevel" header="Level" [filter]="true"></p-column>
+      <p-column field="locationRoom" header="Room" [filter]="true"></p-column>
+      <p-column field="assetClassLevelOneName" header="Asset Class Level 1" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+      <p-column field="verificationStatus" header="Verification Status" [sortable]="false">
+        <ng-template let-item="rowData" pTemplate="body">
+          {{ item.verificationStatusString }}
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+
+  <p-confirmDialog header="Confirm Asset Merge" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
+  <div class="ui-grid-row aed-row">
+    <button pButton class="ui-button-info aed-button" type="text" (click)="confirm()" [disabled]="!displayMergeButton()" label="Merge Assets"></button>
+    <button pButton class="ui-button-info aed-button" type="text" (click)="goBack()" label="Cancel"></button>
+  </div>
+</div>

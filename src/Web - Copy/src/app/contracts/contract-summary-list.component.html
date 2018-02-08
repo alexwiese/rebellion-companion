@@ -1,0 +1,45 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <h2>Contracts ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [responsive]="true" [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]"
+    [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Contracts">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Contract" [routerLink]="['/contract/add']"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="createdDate" header="Created Date" [sortable]="true">
+      <ng-template let-col let-contract="rowData" pTemplate="body">
+        <span>{{contract[col.field] |  date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="name" header="Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="contactBusinessName" header="Principal Business Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="contractorBusinessName" header="Contractor Business Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="startDate" header="Start Date" [sortable]="true">
+      <ng-template let-col let-contract="rowData" pTemplate="body">
+        <span>{{contract[col.field] |  date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="endDate" header="End Date" [sortable]="true">
+      <ng-template let-col let-contract="rowData" pTemplate="body">
+        <span>{{contract[col.field] |  date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-contract="rowData" pTemplate="body">
+        <button pButton type="text" *ngIf="contract.canEdit" [routerLink]="['/contract', contract.id]" icon="fa-edit" title="Edit Contract"></button>
+        <button pButton type="text" *ngIf="!contract.canEdit" [routerLink]="['/contract', contract.id, 'view']" icon="fa-edit" title="View Contract"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <!--Buttons-->
+  <br><button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button><br>
+</div>

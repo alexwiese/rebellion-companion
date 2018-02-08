@@ -1,0 +1,110 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+
+  <div class="card" *ngIf="showBusinessFilter()">
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <div class="ui-grid-row aed-row">
+        <div class="ui-grid-col-1">
+          <h2>Business</h2>
+        </div>
+        <div class="ui-grid-col-3">
+          <p-dropdown [options]="businesses" [(ngModel)]="selectedBusiness" (onChange)="onBusinessChange($event)" [style]="{'width':'100%', 'margin': '10px'}"
+            filter="filter">
+            <ng-template let-b pTemplate="item">
+              <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                <div style="font-size:14px;float:right;margin-top:4px">{{b.label}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>{{ getHeaderInfo(dt, "Assets") }}</h2>
+
+  <p-dataTable id='asset-datatable' [value]="items" selectionMode="single" [(selection)]="selectedItem" [responsive]="true"
+    [rows]="30" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[20,30,50]" [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Assets">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <p-splitButton label="Add" icon="fa-plus" [style]="{'float': 'right', 'text-align': 'left'}" [model]="assetMenuItems"></p-splitButton>
+      </div>
+    </p-header>
+    <p-column [sortable]="true" [filter]="false">
+      <ng-template pTemplate="header">
+        Site Id
+      </ng-template>
+      <ng-template let-asset="rowData" pTemplate="body">
+        <span><a style="color:#d5a940;" [routerLink]="['/site', asset.siteId, 'view']">{{ asset.siteDescription }}</a></span>
+      </ng-template>
+    </p-column>
+    <p-column field="siteName" header="Site Name" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="sites" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+      <ng-template let-asset="rowData" pTemplate="body">
+        <span><a style="color:#d5a940;" [routerLink]="['/site', asset.siteId, 'view']">{{ asset.siteName }}</a></span>
+      </ng-template>
+    </p-column>
+    <p-column field="siteObjectTypeName" header="Type" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="siteObjectTypes" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="siteObjectDescription" header="Site Object" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="siteObjectDescriptions" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+      <ng-template let-asset="rowData" pTemplate="body">
+        <span><a style="color:#d5a940;" [routerLink]="['/siteobject', asset.siteObjectId || '', 'view']">{{ asset.siteObjectDescription || '' }}</a></span>
+      </ng-template>
+    </p-column>
+    <p-column field="identity" header="Asset Id" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="name" header="Asset Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetClassName" header="Asset Class" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetClassLevelOneName" header="Asset Class Level 1" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="assetTypeName" header="Asset Type" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="assetTypes" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="assetConditionString" header="Condition" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="conditionTypes" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="assetStatusString" header="Status" [filter]="true" filterMatchMode="in">
+      <ng-template pTemplate="filter" let-col>
+        <p-multiSelect [options]="statusTypes" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+          styleClass="ui-column-filter"></p-multiSelect>
+      </ng-template>
+    </p-column>
+    <p-column field="level" header="Floor" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="room" header="Room" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column styleClass="col-button" header="Work Orders">
+      <ng-template let-asset="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/workorder/add', asset.id]" icon="fa-plus" title="Add Work Order"></button>
+        <button pButton type="text" [routerLink]="['/workorderlist', asset.id]" icon="fa-eye" title="View Work Orders"></button>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-asset="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/asset/edit', asset.id]" icon="fa-edit" title="Edit Asset"></button>
+        <button pButton type="text" [routerLink]="['/asset/view', asset.id]" icon="fa-eye" title="View Asset"></button>
+        <button pButton type="text" [routerLink]="['/asset', asset.id, 'histories']" icon="fa-history" title="Asset History"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br><button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button><br>
+</div>

@@ -1,0 +1,136 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false && siteObject" class="container">
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+
+  <!--Panel-->
+  <p-panel header="{{ siteObject.name }} - ({{ siteObject.businessName }} - {{ siteObject.siteName }}) - [Aedile Id: {{ siteObject.identity }}]">
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.name">
+          <label>Name</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.code">
+          <label>Code</label>
+        </div>
+      </div>
+
+       <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.legacyId">
+          <label>Legacy Id</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.typeString()">
+          <label>Type</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.buildingTypeString()">
+          <label>Building Type</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.numberOfFloors">
+          <label>Number Of Floors</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.netLettableArea">
+          <label>Net Lettable Area</label>
+        </div>
+      </div>
+      
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.totalFloorArea">
+          <label>Total Floor Area</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.contactDetails">
+          <label>Contact Details</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="siteObject.contactNumber">
+          <label>Contact Number</label>
+        </div>
+      </div>
+
+      <div class="ui-g-12">
+          <label class="aed-label">Parking Details</label>
+          <div class="md-inputfield">
+            <textarea pInputTextarea readonly autocomplete="off" class="aed-input" [ngModel]="siteObject.parkingDetails" autoResize="autoResize"></textarea>
+          </div>
+      </div>
+
+      <div class="ui-g-12">
+          <label class="aed-label">Additional Information</label>
+          <div class="md-inputfield">
+            <textarea pInputTextarea readonly autocomplete="off" class="aed-input" [ngModel]="siteObject.additionalInformation" autoResize="autoResize"></textarea>
+          </div>
+      </div>
+
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.addressStreet">
+            <label>Street</label>
+        </span>
+      </div>
+
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.addressSuburb">
+            <label>Suburb</label>
+        </span>
+      </div>
+
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="siteObject.addressPostcode || ''">
+            <label>Postcode</label>
+        </span>
+      </div>
+
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [value]="siteObject.regionString()">
+            <label>State</label>
+        </span>
+      </div>
+
+      <div class="ui-g-12">
+        <span class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [value]="siteObject.countryString()">
+            <label>Country</label>
+        </span>
+      </div>
+    </div>
+  </p-panel>
+
+  <br>
+
+  <!--Buttons-->
+  <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+  <br>
+</div>

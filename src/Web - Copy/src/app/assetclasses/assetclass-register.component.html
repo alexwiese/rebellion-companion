@@ -1,0 +1,36 @@
+<p-messages [value]="uploadResultErrors" *ngIf="uploadResultErrors.length > 0"></p-messages>
+<p-messages [value]="uploadResultSuccesses" *ngIf="uploadResultSuccesses.length > 0"></p-messages>
+<p-messages [value]="uploadResultExists" *ngIf="uploadResultExists.length > 0"></p-messages>
+<p-messages [value]="errors" *ngIf="errors.length > 0"></p-messages>
+
+<p-panel>
+  <p-header>
+    Import Asset Classes/Types
+  </p-header>
+  <p-fileUpload mode="basic" [hidden]="uploadingFile" name="assetClassRegister" url="{{uploadFilesUrl}}" accept=".csv,text/csv"
+    maxFileSize="1000000" chooseLabel="Choose File" (onError)="onError($event)" (onUpload)="onUpload($event)"
+    (onBeforeUpload)="onBeforeUpload($event)" (onBeforeSend)="onBeforeSend($event)"></p-fileUpload>
+  <h3 *ngIf="uploadingFile">Loading file...</h3>
+</p-panel>
+
+<br>
+
+<p-panel header="Asset Classes ({{ assetClasses.length }})" *ngIf="assetClasses.length > 0">
+  <p-dataTable [value]="assetClasses" [paginator]="true" [rows]="50" [globalFilter]="gb" #dt>
+    <p-column field="name" header="Name" [sortable]="true"></p-column>
+    <p-column field="level" header="Level" [sortable]="true"></p-column>
+    <p-column field="assetTypeName" header="AssetType" [sortable]="true"></p-column>
+  </p-dataTable>
+  <br>
+  <button pButton class="ui-button-info aed-button" type="button" [disabled]="assetsUploading()" (click)="saveAssetClasses()" label="Run Import"></button>
+  <br><br>
+</p-panel>
+
+<p-panel header="Errors ({{ errorMessages.length }})" *ngIf="errorMessages.length > 0">
+  <p-dataTable [value]="errorMessages" [paginator]="true" [rows]="50" [globalFilter]="gb" #dt>
+    <p-column field="text" header="Message" [sortable]="true"></p-column>
+  </p-dataTable>
+  <br>
+  <button pButton class="ui-button-info aed-button" [disabled]="assetsUploading()" type="button" (click)="saveAssetUploads()" label="Run Import"></button>
+  <br><br>
+</p-panel>

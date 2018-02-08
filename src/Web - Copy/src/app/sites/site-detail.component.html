@@ -1,0 +1,414 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded && site">
+    <form [formGroup]="siteForm" (ngSubmit)="onSubmit(siteForm.value)">
+      <p-messages [value]="errors"></p-messages>
+
+      <!--Site Panel-->
+      <p-panel>
+        <p-header *ngIf="site.id === getEmptyGuid() || site.id === ''">
+          Add Site - ({{ business.name }})
+        </p-header>
+        <p-header *ngIf="site.id !== getEmptyGuid() && site.id !== ''">
+          Edit Site - ({{ business.name }}) - [Aedile Id: {{ site.identity }}]
+        </p-header>
+
+        <p-tabView>
+
+          <p-tabPanel header="Main Details" headerStyleClass="{{ getPanelHeaderClass('main') }}">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Code *
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="code" placeholder="Code..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['code'].hasError('required') && siteForm.dirty">
+                    Site code is required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['code'].hasError('maxlength') && siteForm.dirty">
+                    Site code can't be more than 100 characters
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['code'].hasError('siteCodeExistsValidator') && siteForm.dirty">
+                    This site code exists for this site/business already
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Name *
+                </div>
+                <div class="ui-grid-col-6">
+                  <input pInputText type="text" formControlName="name" placeholder="Name..." />
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['name'].hasError('required') && siteForm.dirty">
+                    Site name is required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['name'].hasError('maxlength') && siteForm.dirty">
+                    Site name can't be more than 100 characters
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['name'].hasError('siteNameExistsValidator') && siteForm.dirty">
+                    This site name exists for this site/business already
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-g-12">
+                <div class="card card-w-title">
+                  <p-fieldset legend="Address Details" toggleable="true">
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        Street *
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" formControlName="addressStreet" placeholder="Street..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressStreet'].hasError('required') && siteForm.dirty">
+                          Street is required
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressStreet'].hasError('maxlength') && siteForm.dirty">
+                          Street can't be more than 100 characters
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        Suburb *
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" formControlName="addressSuburb" placeholder="Suburb..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressSuburb'].hasError('required') && siteForm.dirty">
+                          Suburb is required
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressSuburb'].hasError('maxlength') && siteForm.dirty">
+                          Suburb can't be more than 100 characters
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        Postcode *
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" formControlName="addressPostcode" placeholder="Postcode..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressPostcode'].hasError('required') && siteForm.dirty">
+                          Postcode is required
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressPostcode'].hasError('maxlength') && siteForm.dirty">
+                          Postcode must be 4 digits
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['addressPostcode'].hasError('minlength') && siteForm.dirty">
+                          Postcode must be 4 digits
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row  aed-row">
+                      <div class="ui-grid-col-2">
+                        State *
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <p-dropdown [options]="business.regions" [(ngModel)]="site.addressRegion" formControlName="addressRegion" [autoWidth]="false"></p-dropdown>
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row  aed-row">
+                      <div class="ui-grid-col-2">
+                        Country *
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <p-dropdown [options]="business.countries" [(ngModel)]="site.addressCountry" formControlName="addressCountry" [autoWidth]="false"></p-dropdown>
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+                  </p-fieldset>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Site Type *
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="site.siteTypes" [(ngModel)]="site.type" formControlName="type" [autoWidth]="false">></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Site Description
+                </div>
+                <div class="ui-grid-col-6">
+                  <textarea pInputTextarea rows="5" cols="30" style="width: 100%" formControlName="description" placeholder="Site description..."
+                    autoResize="autoResize"></textarea>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['description'].hasError('required') && siteForm.dirty">
+                    Site Description is required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['description'].hasError('maxlength') && siteForm.dirty">
+                    Site Description can't be more than 1000 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Parking Details
+                </div>
+                <div class="ui-grid-col-6">
+                  <textarea pInputTextarea rows="5" cols="30" style="width: 100%" formControlName="parkingDetails" placeholder="Parking details..."
+                    autoResize="autoResize"></textarea>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['parkingDetails'].hasError('required') && siteForm.dirty">
+                    Parking Details are required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['parkingDetails'].hasError('maxlength') && siteForm.dirty">
+                    Parking Details can't be more than 1000 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Access Details
+                </div>
+                <div class="ui-grid-col-6">
+                  <textarea pInputTextarea rows="5" cols="30" style="width: 100%" formControlName="accessDetails" placeholder="Access details..."
+                    autoResize="autoResize"></textarea>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['accessDetails'].hasError('required') && siteForm.dirty">
+                    Access Details are required
+                  </div>
+                  <div class="ui-message ui-messages-error ui-corner-all" *ngIf="siteForm.controls['accessDetails'].hasError('maxlength') && siteForm.dirty">
+                    Access Details owner can't be more than 1000 characters
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="loading == false" class="context-section aedile-datatable">
+              <div class="aed-flex">
+                <div *ngFor="let f of site.files" class="aed-flex-item">
+                  <div>
+                    <h5>{{f.fileName}}</h5>
+                    <img style="max-width: 100%; max-height: 100%;" src="{{f.absoluteUri}}">
+                    <button pButton class="ui-button-warning aed-button" type="button" (click)="openMap()" label="Map"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Site Assets" headerStyleClass="{{ getPanelHeaderClass('assets') }}">
+            <div class="ui-grid" *ngIf="site.id !== getEmptyGuid()">
+              <div class="ui-grid-row aed-row">
+                <aed-asset-list [siteIdRequired]="true" [showBusinessFilterSection]="false" [siteId]="site.id"></aed-asset-list>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Buildings" headerStyleClass="{{ getPanelHeaderClass('buildings') }}">
+            <div class="ui-grid" *ngIf="site.id !== getEmptyGuid()">
+              <div class="ui-grid-row aed-row">
+                <aed-siteobject-summary-list [labelText]="'Building'" [siteId]="site.id" [businessId]="site.businessId" [siteObjects]="buildingSiteObjects"></aed-siteobject-summary-list>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Grounds" headerStyleClass="{{ getPanelHeaderClass('grounds') }}">
+            <div class="ui-grid" *ngIf="site.id !== getEmptyGuid()">
+              <div class="ui-grid-row aed-row">
+                <aed-siteobject-summary-list [labelText]="'Ground'" [siteId]="site.id" [businessId]="site.businessId" [siteObjects]="groundSiteObjects"></aed-siteobject-summary-list>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Infrastructure" headerStyleClass="{{ getPanelHeaderClass('infrastructure') }}">
+            <div class="ui-grid" *ngIf="site.id !== getEmptyGuid()">
+              <div class="ui-grid-row aed-row">
+                <aed-siteobject-summary-list [labelText]="'Infrastructure'" [siteId]="site.id" [businessId]="site.businessId" [siteObjects]="infrastructureSiteObjects"></aed-siteobject-summary-list>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Compliance" headerStyleClass="{{ getPanelHeaderClass('compliance') }}">
+            <p-panel>
+              <p-header>
+                Site Compliance
+              </p-header>
+              <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+                <div class="ui-grid-row aed-row">
+                  <div class="ui-grid-col-12">
+                    <aed-compliance-item-selectable (onComplianceItemDetailSelected)="complianceItemSelected($event)" (onComplianceItemDetailUnselected)="complianceItemUnselected($event)"
+                      [siteComplianceItems]="complianceItems" [selectedComplianceItems]="site.complianceItems">
+                    </aed-compliance-item-selectable>
+                  </div>
+                </div>
+              </div>
+            </p-panel>
+
+            <br>
+
+            <p-panel>
+              <p-header>
+                Site Safety Instruction
+              </p-header>
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-2">
+                  Safety Instruction
+                </div>
+                <div class="ui-grid-col-6">
+                  <p-dropdown [options]="safetyInstructions" [style]="{'width':'100%'}" [(ngModel)]="site.safetyInstructionId" formControlName="safetyInstructionId"
+                    [autoWidth]="false">></p-dropdown>
+                </div>
+                <div class="ui-grid-col-4">
+                </div>
+              </div>
+            </p-panel>
+          </p-tabPanel>
+
+          <p-tabPanel header="Documents">
+            <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+              <p *ngIf="isNewSite()">You can only add images to an already created Site</p>
+              <p-fileUpload *ngIf="!isNewSite()" name="siteFiles[]" showUploadButton="false" showCancelButton="false" url="{{uploadFilesUrl}}"
+                (onUpload)="onUploadFiles($event)" (onError)="onUploadError($event)" (onBeforeSend)="onBeforeSend($event)"
+                (onSelect)="onFileSelected($event)" (onBeforeUpload)="onBeforeUpload($event)" accept="image/*" maxFileSize="5000000">
+                <ng-template let-file pTemplate="file">
+                  <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Name
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" [attr.required]="fileValidationRequired && siteForm.controls['fileName'].value.length == 0"
+                          formControlName="fileName" placeholder="Document name..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && siteForm.controls['fileName'].hasError('maxlength')">
+                          File name can't be more than 100 characters
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && siteForm.controls['fileName'].value.length == 0">
+                          File name is required
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Source
+                      </div>
+                      <div class="ui-grid-col-6">
+                        <input pInputText type="text" [attr.required]="fileValidationRequired  && siteForm.controls['fileSource'].value.length == 0"
+                          formControlName="fileSource" placeholder="Document source..." />
+                      </div>
+                      <div class="ui-grid-col-4">
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && siteForm.controls['fileSource'].hasError('maxlength')">
+                          File source can't be more than 100 characters
+                        </div>
+                        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="fileValidationRequired && siteForm.controls['fileSource'].value.length == 0">
+                          File source is required
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        Original Name
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.name}}
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Size
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.size / 1000000}} MB
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+
+                    <div class="ui-grid-row aed-row">
+                      <div class="ui-grid-col-2">
+                        File Type
+                      </div>
+                      <div class="ui-grid-col-6">
+                        {{file.type}}
+                      </div>
+                      <div class="ui-grid-col-4">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </p-fileUpload>
+
+              <p-dataTable [value]="site.files" *ngIf="site.files && site.files.length > 0">
+                <p-column field="fileName" header="Site Document"></p-column>
+                <p-column field="fileSource" header="Source"></p-column>
+                <p-column>
+                  <ng-template pTemplate="header">
+                    <button type="button" class="ui-button-info aed-button" pButton (click)="showDocumentImages()" label="{{documentImagesButtonText}}"></button>
+                  </ng-template>
+                  <ng-template let-f="rowData" pTemplate="body">
+                    <button type="button" class="ui-button-danger aed-button" pButton (click)="deleteFile(f)" label="Delete"></button>
+                  </ng-template>
+                </p-column>
+              </p-dataTable>
+
+              <div *ngIf="loading == false && displayDocumentImages" class="context-section aedile-datatable">
+                <div class="aed-flex">
+                  <div *ngFor="let f of site.files" class="aed-flex-item">
+                    <div>
+                      <h5>{{f.fileName}}</h5>
+                      <img style="max-width: 100%; max-height: 100%;" src="{{f.absoluteUri}}">
+                      <button pButton class="ui-button-warning aed-button" type="button" (click)="viewMap()" label="View Map"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+
+        <div class="buttons" style="margin: 10px">
+          <button pButton class="ui-button-info aed-button" type="submit" [disabled]="siteForm.pristine || siteForm.invalid" label="Save"></button>
+          <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+        </div>
+
+        <br>
+        <br>
+      </p-panel>
+
+      <br>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="workOrder">
+
+    <!--Work Order Panel-->
+    <p-panel header="Work Order Details">
+      <div class="ui-g form-group">
+
+        <!--Name -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workOrder.name">
+            <label>Name</label>
+          </div>
+        </div>
+
+        <!--Type -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workOrder.typeString()">
+            <label>Type of Work Order</label>
+          </div>
+        </div>
+
+        <!--Description -->
+        <div class="ui-g-12">
+          <label class="aed-label">Description</label>
+          <div class="md-inputfield">
+            <textarea pInputTextarea readonly autocomplete="off" class="aed-input" [ngModel]="workOrder.description" autoResize="autoResize"></textarea>
+          </div>
+        </div>
+
+         <!--Additional Information -->
+        <div class="ui-g-12">
+          <label class="aed-label">Additional Information</label>
+          <div class="md-inputfield">
+            <textarea pInputTextarea readonly autocomplete="off" class="aed-input" [ngModel]="workOrder.additionalInformation" autoResize="autoResize"></textarea>
+          </div>
+        </div>
+
+        <!--Asset Name -->
+        <div class="ui-g-12" *ngIf="workOrder.assetName">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workOrder.assetName">
+            <label>Asset Name</label>
+          </div>
+        </div>
+
+        <!--HasAssetDetails -->
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="workOrder.hasAssetDetailsDisplay()">
+            <label>Has Asset Details?</label>
+          </div>
+        </div>
+
+      </div>
+    </p-panel>
+
+    <br>
+
+    <!--Buttons-->
+    <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+    <br>
+  </div>
+</div>

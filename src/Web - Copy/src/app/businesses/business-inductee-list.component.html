@@ -1,0 +1,32 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <h2>Inductions ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [responsive]="true" [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]">
+    <p-column field="" header="Type" [sortable]="true">
+      <ng-template let-col let-m="rowData" pTemplate="body">
+        <span>Business</span>
+      </ng-template>
+    </p-column>
+    <p-column field="businessName" header="Business Name " [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="inductedDate" header="Date Inducted" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="expiryDate" header="Expiry Date" [sortable]="true">
+      <ng-template let-col let-item="rowData" pTemplate="body">
+        <span>{{item[col.field] | date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-item="rowData" pTemplate="body">
+        <button *ngIf="showEditButton" pButton type="text" [routerLink]="['/businessinductees', item.id]" icon="fa-edit" title="Edit Induction"></button>
+        <button pButton type="text" [routerLink]="['/businessinductees', item.id, 'view']" icon="fa-eye" title="View Induction"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br><button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button><br>
+</div>

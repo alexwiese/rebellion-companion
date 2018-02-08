@@ -1,0 +1,183 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="loaded">
+    <p-panel header="Edit {{ person.firstName }} {{ person.lastName }} ({{ person.roleString }} - {{ person.businessName }})">
+      <div class="ui-grid-row aed-row">
+        <div class="ui-grid-col-3">
+          <div class="card" style="margin: 3px">
+            <h3>Name</h3>
+            {{ person.firstName }} {{ person.lastName }}
+          </div>
+        </div>
+        <div class="ui-grid-col-3">
+          <div class="card" style="margin: 3px">
+            <h3>Company</h3>
+            {{ person.businessName }}
+          </div>
+        </div>
+        <div class="ui-grid-col-3">
+          <div class="card" style="margin: 3px">
+            <h3>Username</h3>
+            {{ person.userName }}
+          </div>
+        </div>
+        <div class="ui-grid-col-3">
+          <div class="card" style="margin: 3px">
+            <h3>Role</h3>
+            {{ person.roleString }}
+          </div>
+        </div>
+      </div>
+
+      <p-tabView>
+        <p-tabPanel header="Main Details">
+          <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+            <form [formGroup]="personForm" (ngSubmit)="onSubmit(personForm.value)">
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-8">
+                  <div class="ui-grid-row aed-row">
+                    <div class="ui-grid-col-2">
+                      First Name *
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <input pInputText type="text" formControlName="firstName" placeholder="First name..." />
+                    </div>
+                    <div class="ui-grid-col-4">
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['firstName'].hasError('required') && personForm.dirty">
+                        First name is required
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['firstName'].hasError('maxlength') && personForm.dirty">
+                        First name can't be more than 50 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-grid-row aed-row">
+                    <div class="ui-grid-col-2">
+                      Last Name *
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <input pInputText type="text" formControlName="lastName" placeholder="Last name..." />
+                    </div>
+                    <div class="ui-grid-col-4">
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['lastName'].hasError('required') && personForm.dirty">
+                        Last name is required
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['lastName'].hasError('maxlength') && personForm.dirty">
+                        Last name can't be more than 50 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-grid-row aed-row">
+                    <div class="ui-grid-col-2">
+                      Phone Number *
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <input pInputText type="text" formControlName="phoneNumber" placeholder="Phone number..." />
+                    </div>
+                    <div class="ui-grid-col-4">
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('required') && personForm.dirty">
+                        Phone number is required
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('maxlength') && personForm.dirty">
+                        Phone Number can't be more than 50 characters
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('invalidPhoneNumber') && personForm.dirty">
+                        Invalid phone number
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-grid-row aed-row">
+                    <div class="ui-grid-col-2">
+                      Email *
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <input pInputText type="text" formControlName="email" placeholder="Email..." />
+                    </div>
+                    <div class="ui-grid-col-4">
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('required')  && personForm.dirty">
+                        Email is required
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('maxlength')  && personForm.dirty">
+                        Email can't be more than 100 characters'
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('invalidEmail')  && personForm.dirty">
+                        Invalid email address
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('emailExistsValidator')  && personForm.dirty">
+                        Email already exists
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ui-grid-row aed-row">
+                    <div class="ui-grid-col-2">
+                      Password
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <input pPassword type="password" formControlName="password" placeholder="Password..." />
+                    </div>
+                    <div class="ui-grid-col-4">
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('required') && personForm.dirty">
+                        Password is required
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('maxlength') && personForm.dirty">
+                        Password can't be more than 100 characters
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('minlength') && personForm.dirty">
+                        Password must be at least 8 characters
+                      </div>
+                      <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('invalidPassword') && personForm.dirty">
+                        Password needs one digit, one upper case, one lower case and at least 8 characters
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-grid-col-4">
+                  <div class="ui-grid-row aed-row">
+                    <div class="context-section aedile-datatable">
+                      <div *ngIf="uploadingFile == false" class="aed-flex">
+                        <div>
+                          <img style="width: 100%" src="{{person.imageDisplayUri}}">
+                        </div>
+                      </div>
+                      <div *ngIf="uploadingFile" class="loader"></div>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row aed-row">
+                    <p-fileUpload [style]="{'width':'100%'}" mode="basic" name="personFile" url="{{ uploadFilesUrl}}" accept="image/*" (onError)="onUploadError($event)"
+                      (onBeforeSend)="onBeforeSend($event)" maxFileSize="5000000" (onUpload)="onUploadFiles($event)" auto="true"
+                      chooseLabel="Upload Photo"></p-fileUpload>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ui-grid-row aed-row">
+                <div class="ui-grid-col-8">
+                  <button pButton class="ui-button-info aed-button" type="submit" label="Save" [disabled]="personForm.pristine || personForm.invalid"></button>
+                  <button pButton class="ui-button-info aed-button" type="submit" (click)="goBack()" label="Cancel"></button>
+                </div>
+                <div class="ui-grid-col-4"></div>
+              </div>
+            </form>
+          </div>
+
+        </p-tabPanel>
+
+        <p-tabPanel header="Compliances">
+          <aed-person-compliance-item-list [personId]="person.id"></aed-person-compliance-item-list>
+        </p-tabPanel>
+
+        <p-tabPanel header="Inductions">
+          <aed-business-inductee-list [showEditButton]="true" [personId]="person.id" [businessId]="person.businessId"></aed-business-inductee-list>
+        </p-tabPanel>
+
+      </p-tabView>
+    </p-panel>
+    <br>
+  </div>
+</div>

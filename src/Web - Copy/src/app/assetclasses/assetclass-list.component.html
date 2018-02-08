@@ -1,0 +1,115 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+
+    <p-messages [value]="errors" [closable]="false"></p-messages>
+
+    <div class="ui-g-12">
+      <div class="card card-w-title">
+        <button pButton type="button" (click)="addNewAssetClass()" label="Add Level 1 Class" style="float: right; margin: 5px"></button>
+        <p-treeTable [value]="assetClasses" selectionMode="single" [(selection)]="selectedAssetClass" (onNodeSelect)="nodeSelect($event)">
+          <p-header>
+            <div class="ui-helper-clearfix">
+              <span>Asset Classes (Click on row to edit)</span>
+              <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Asset Class (Level 1)" (click)="addAssetClassLevelOne()"
+                style="float:right"></button>
+            </div>
+          </p-header>
+          <p-column field="name" header="Name" [style]="{'width':'30%'}" colspan="2"></p-column>
+          <p-column field="level" header="Level" [style]="{'width':'5%'}" colspan="1"></p-column>
+          <p-column field="description" header="Description" [style]="{'width':'25%'}" colspan="2"></p-column>
+          <p-column header="Asset Type" [style]="{'width':'20%'}" colspan="2">
+            <ng-template let-node="rowData" pTemplate="body">
+              <button pButton type="button" class="assetTypeNameButton" *ngIf="node.data.assetTypeName" [disabled]="!canEditAssetType(node.data)"
+                style="float: right;margin: 0 5px" (click)="editAssetType(node.data)" label="{{node.data.assetTypeName}}"></button>
+              <button pButton type="button" *ngIf="!node.data.assetTypeName" [disabled]="!canEditAssetType(node.data)" style="float: right;margin: 0 5px"
+                (click)="addAssetType(node.data)" label="Click to add Asset Type"></button>
+            </ng-template>
+          </p-column>
+          <p-column header="Actions" [style]="{'width':'20%'}" colspan="2">
+            <ng-template let-node="rowData" pTemplate="body">
+              <button pButton type="button" [disabled]="!canDeleteAssetClass(node.data)" style="float: right;margin: 0 5px" (click)="deleteAssetClass(node.data.id)"
+                label="Delete"></button>
+              <button pButton type="button" [disabled]="!canEditAssetClass(node.data)" style="float: right;margin: 0 5px" (click)="editAssetClass(node.data)"
+                label="Edit"></button>
+              <button pButton type="button" [disabled]="!canAddAssetClass(node.data)" style="float: right;margin: 0 5px" (click)="addAssetClass(node.data)"
+                label="Add"></button>
+            </ng-template>
+          </p-column>
+        </p-treeTable>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-g-12" *ngIf="showAssetTypeDialog">
+    <p-dialog [style]="{'position':'absolute'}" [(visible)]="showAssetTypeDialog" modal="true" closeOnEscape="true" [minHeight]="600"
+      [width]="getWindowWidth()" [positionTop]="10" [responsive]="true" header="Add/Edit Asset Type">
+      <aed-assettype-detail [assetTypeId]="assetClass.id" [breadCrumb]="assetClass.breadCrumb" (onAssetTypeSaved)="assetTypeSaved($event)"
+        (onAssetTypeCancelled)="assetTypeCancelled($event)"></aed-assettype-detail>
+    </p-dialog>
+  </div>
+
+  <div class="ui-g-12" *ngIf="showAddAssetClassDialog">
+    <p-dialog header=" {{dialogHeader}}" [(visible)]="showAddAssetClassDialog" modal="true" closeOnEscape="true" [width]="getWindowWidth()"
+      [responsive]="true">
+
+      <form [formGroup]="assetClassForm" (ngSubmit)="onSubmit(assetClassForm.value)">
+
+        <p-messages [value]="errors"></p-messages>
+
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              {{levelLabel}}
+            </div>
+            <div class="ui-grid-col-6">
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetClassForm.controls['name'].hasError('required') && assetClassForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetClassForm.controls['name'].hasError('maxlength') && assetClassForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Description
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="15" formControlName="description" placeholder="Description..." autoResize="autoResize">
+              </textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="assetClassForm.controls['description'].hasError('maxlength') && assetClassForm.dirty">
+                Description can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p-footer>
+          <button pButton class="ui-button-info aed-button" type="submit" [disabled]="assetClassForm.pristine || assetClassForm.invalid"
+            label="Save"></button>
+          <button pButton class="ui-button-info aed-button" type="button" (click)="showAddAssetClassDialog = false" label="Cancel"></button>
+        </p-footer>
+      </form>
+    </p-dialog>
+  </div>
+
+</div>

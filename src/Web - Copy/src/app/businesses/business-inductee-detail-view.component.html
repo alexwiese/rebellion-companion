@@ -1,0 +1,61 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="businessInductee">
+    <p-panel header="Business Inductee Details">
+      <div class="ui-g form-group">
+
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="businessInductee.businessName">
+            <label>Business Name</label>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" [ngModel]="businessInductee.personName">
+            <label>Person Name</label>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ businessInductee.inductedDate | date: 'dd/MM/yyyy' }}">
+            <label>Date Inducted</label>
+          </div>
+        </div>
+
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{ businessInductee.expiryDate | date: 'dd/MM/yyyy' }}">
+            <label>Expiry Date</label>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <p-panel>
+      <p-header>
+        Document
+      </p-header>
+      <div *ngIf="loading == false && businessInductee.absoluteUri" class="context-section aedile-datatable">
+        <div class="aed-flex">
+          <div class="aed-flex-item">
+            <div>
+              <img style="max-width: 100%; max-height: 100%;" src="{{businessInductee.absoluteUri}}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+
+    <br>
+
+    <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+    <br>
+  </div>

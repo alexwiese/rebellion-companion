@@ -1,0 +1,208 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="loaded">
+    <form [formGroup]="personForm" (ngSubmit)="onSubmit(personForm.value)">
+      <p-panel header="Add Person">
+        <input id="id" formControlName="id" name="id" type="hidden" class="form-control" [formControl]="personForm.controls['id']"
+        />
+        <input id="active" formControlName="active" name="active" type="hidden" class="form-control" [formControl]="personForm.controls['active']"
+        />
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Business-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Business *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown id="business" [options]="businesses" [style]="{'width': '100%'}" [(ngModel)]="person.businessId" formControlName="business"
+                [autoWidth]="true" filter="filter"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['business'].hasError('required') && personForm.dirty">
+                Business is required
+              </div>
+            </div>
+          </div>
+
+          <!--First Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              First Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="firstName" placeholder="First name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['firstName'].hasError('required') && personForm.dirty">
+                First name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['firstName'].hasError('maxlength') && personForm.dirty">
+                First name can't be more than 50 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Last Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Last Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="lastName" placeholder="Last name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['lastName'].hasError('required') && personForm.dirty">
+                Last name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['lastName'].hasError('maxlength') && personForm.dirty">
+                Last name can't be more than 50 characters
+              </div>
+            </div>
+          </div>
+
+          <!--User Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              User Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="userName" placeholder="User name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['userName'].hasError('required') && personForm.dirty">
+                User name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['userName'].hasError('maxlength') && personForm.dirty">
+                User name can't be more than 50 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['userName'].hasError('invalidusername') && personForm.dirty">
+                Invalid user name
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['userName'].hasError('nameExistsValidator') && personForm.dirty">
+                User name already exists
+              </div>
+            </div>
+          </div>
+
+          <!--Phone-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Phone Number *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="phoneNumber" placeholder="Phone number..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('required') && personForm.dirty">
+                Phone number is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('maxlength') && personForm.dirty">
+                Phone Number can't be more than 50 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['phoneNumber'].hasError('invalidPhoneNumber') && personForm.dirty">
+                Invalid phone number
+              </div>
+            </div>
+          </div>
+
+          <!--Email-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Email *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="email" placeholder="Email..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('required') && personForm.dirty">
+                Email is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('maxlength') && personForm.dirty">
+                Email can't be more than 100 characters'
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('invalidEmail') && personForm.dirty">
+                Invalid email address
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['email'].hasError('emailExistsValidator') && personForm.dirty">
+                Email already exists
+              </div>
+            </div>
+          </div>
+
+          <!--Role-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Role *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="person.roles" [(ngModel)]="person.role" formControlName="role" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Password-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Password *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pPassword type="password" formControlName="password" placeholder="Password..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('required') && personForm.dirty">
+                Password is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('maxlength') && personForm.dirty">
+                Password can't be more than 100 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('minlength') && personForm.dirty">
+                Password must be at least 8 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="personForm.controls['password'].hasError('invalidPassword') && personForm.dirty">
+                Password needs one digit, one upper case, one lower case and at least 8 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Supervisor Permissions-->
+          <div class="ui-grid-row aed-row" *ngIf="person.role == 4">
+            <div class="ui-grid-col-2">
+              Supervisor Permissions:
+            </div>
+            <div class="ui-grid-col-6">
+              <p-checkbox formControlName="isPlanner" id="isPlanner" name="isPlanner" (onChange)="person.isPlanner === !person.isPlanner"
+                [(ngModel)]="person.isPlanner" label="Is Planner" binary="true"></p-checkbox>
+              <p-checkbox formControlName="isScheduler" id="isScheduler" name="isScheduler" (onChange)="person.isScheduler === !person.isScheduler"
+                [(ngModel)]="person.isScheduler" label="Is Scheduler" binary="true"></p-checkbox>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Field Worker Permissions-->
+          <div class="ui-grid-row aed-row" *ngIf="person.role == 5">
+            <div class="ui-grid-col-2">
+              Field Worker Permissions:
+            </div>
+            <div class="ui-grid-col-6">
+              <p-checkbox formControlName="isAssetAuditor" id="isAssetAuditor" name="isAssetAuditor" (onChange)="person.isAssetAuditor === !person.isAssetAuditor"
+                [(ngModel)]="person.isAssetAuditor" label="Is Asset Auditor" binary="true"></p-checkbox>
+              <p-checkbox formControlName="isTechnician" id="isTechnician" name="isTechnician" (onChange)="person.isTechnician === !person.isTechnician"
+                [(ngModel)]="person.isTechnician" label="Is Technician" binary="true"></p-checkbox>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Buttons-->
+          <button pButton class="ui-button-info aed-button" type="submit" label="Save" [disabled]="personForm.pristine || personForm.invalid"></button>
+          <button pButton class="ui-button-info aed-button" type="submit" (click)="goBack()" label="Cancel"></button>
+        </div>
+      </p-panel>
+    </form>
+  </div>
+</div>

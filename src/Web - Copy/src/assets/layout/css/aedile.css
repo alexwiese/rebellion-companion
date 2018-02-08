@@ -1,0 +1,12 @@
+#asset-datatable .ui-datatable table {
+  font-size: 12px;
+}
+
+#workorder-datatable .ui-datatable table {
+  font-size: 12px;
+}
+
+.hasExpired {
+  color: #d9534f !important;
+  font-weight: bold
+}

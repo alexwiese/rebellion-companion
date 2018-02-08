@@ -1,0 +1,30 @@
+<div class="login-body">
+  <form [formGroup]="loginForm" (submit)="performLogin($event)">
+    <p-messages [value]="errors"></p-messages>
+
+    <div class="card login-panel ui-fluid">
+      <div class="ui-g aed-login-card">
+        <div class="ui-g-12">
+          <img src="../../assets/images/login/login-logo.png">
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <input id="username"  type="text" pInputText autocomplete="off" formControlName="username" class="ui-inputtext ui-corner-all ui-state-default ui-widget">
+            <label>Username / Email</label>
+        </span>
+        </div>
+        <div class="ui-g-12">
+          <span class="md-inputfield">
+            <input id="password" type="password" pInputText autocomplete="off" formControlName="password" class="ui-inputtext ui-corner-all ui-state-default ui-widget">
+            <label>Password</label>
+          </span>
+        </div>
+        <div class="ui-g-12">
+          <button type="button" type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left">
+            <span class="ui-button-text ui-c">Sign In</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

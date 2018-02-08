@@ -1,0 +1,33 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <h2>Manufacturers ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [responsive]="true" [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]"
+    [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search Manufacturers">
+        <button type="button" pButton icon="fa-file-o" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="Add Manufacturer"  [routerLink]="['/manufacturer/add']" 
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column field="name" header="Name" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column field="createdDate" header="Created Date" [sortable]="true">
+      <ng-template let-col let-m="rowData" pTemplate="body">
+        <span>{{ m[col.field] |  date:'dd/MM/yyyy'}}</span>
+      </ng-template>
+    </p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-m="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/manufacturer', m.id]" icon="fa-edit" title="Edit Manufacturer"></button>
+        <button pButton type="text" [routerLink]="['/manufacturer', m.id, 'view']" icon="fa-eye" title="View Manufacturer"></button>
+        <button pButton type="text" [disabled]="!m.canDelete" (click)="deleteManufacturer(m.id); $event.stopPropagation();" icon="fa-trash-o" title="Delete"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+  <br><button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button><br>
+</div>

@@ -1,0 +1,146 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <div *ngIf="loaded">
+    <form [formGroup]="workInstructionForm" (ngSubmit)="onSubmit(workInstructionForm.value)">
+      <p-messages [value]="errors"></p-messages>
+
+      <!--Work Instruction Panel-->
+      <p-panel>
+        <p-header>
+          <div *ngIf="workInstructionId">Edit {{ workInstruction.name }}</div>
+          <div *ngIf="!workInstructionId">Add Work Instruction</div>
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--IsDefault-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Is Default
+            </div>
+            <div class="ui-grid-col-1">
+              <p-toggleButton formControlName="isDefault" onLabel="Yes" offLabel="No"></p-toggleButton>
+            </div>
+            <div class="ui-grid-col-9">
+            </div>
+          </div>
+
+          <!--Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['name'].hasError('required') && workInstructionForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['name'].hasError('maxlength') && workInstructionForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Code-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Code *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="code" placeholder="Code..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['code'].hasError('required') && workInstructionForm.dirty">
+                Code is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['code'].hasError('maxlength') && workInstructionForm.dirty">
+                Code can't be more than 256 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Source-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Source *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="source" placeholder="Source..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['source'].hasError('required') && workInstructionForm.dirty">
+                Code is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['source'].hasError('maxlength') && workInstructionForm.dirty">
+                Source can't be more than 256 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Description-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Description
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="30" formControlName="description" placeholder="Description..." autoResize="autoResize"></textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workInstructionForm.controls['description'].hasError('maxlength') && workInstructionForm.dirty">
+                Description can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Type-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Type *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="workInstruction.types" [(ngModel)]="workInstruction.type" formControlName="type" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Asset Types-->
+      <p-panel>
+        <p-header>
+          Asset Types ({{ assetTypes.length }})
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-12">
+              <aed-assettype-selectable (onAssetTypeSelected)="assetTypeSelected($event)" (onAssetTypeUnselected)="assetTypeUnselected($event)"
+                [assetTypes]="assetTypes" [selectedAssetTypes]="workInstruction.assetTypes">
+              </aed-assettype-selectable>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Work Instruction Tasks-->
+      <aed-workinstructiontasks-list (onWorkInstructionTaskCreated)="workInstructionTaskCreated($event)" [workInstructionId]="workInstructionId">
+      </aed-workinstructiontasks-list>
+
+      <br>
+
+      <!--Buttons-->
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="workInstructionForm.pristine || workInstructionForm.invalid"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+  </div>
+</div>

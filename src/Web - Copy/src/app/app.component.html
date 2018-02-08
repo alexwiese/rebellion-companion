@@ -1,0 +1,27 @@
+<div class="layout-wrapper" [ngClass]="{'layout-compact':layoutCompact}">
+
+  <div #layoutContainer class="layout-container" [ngClass]="{'menu-layout-static': !isOverlay(),
+            'menu-layout-overlay': isOverlay(),
+            'layout-menu-overlay-active': overlayMenuActive,
+            'menu-layout-horizontal': isHorizontal(),
+            'layout-menu-static-inactive': staticMenuDesktopInactive,
+            'layout-menu-static-active': staticMenuMobileActive}">
+
+    <aed-topbar [hidden]="!showMenu()"></aed-topbar>
+
+    <div [hidden]="!showMenu()" class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
+      <div #layoutMenuScroller class="nano">
+        <div class="nano-content menu-scroll-content">
+          <aed-menu [reset]="resetMenu"></aed-menu>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout-main" #layoutMainContainer>
+      <router-outlet></router-outlet>
+    </div>
+
+    <div class="layout-mask"></div>
+  </div>
+
+</div>

@@ -1,0 +1,328 @@
+﻿<div *ngIf="loading === true" class="loader">Loading..</div>
+
+<div *ngIf="loading === false">
+
+    <p-messages [value]="errors"></p-messages>
+
+    <form [formGroup]="businessForm" (ngSubmit)="onSubmit(businessForm.value)" *ngIf="loaded">
+
+      <!--Business Panel-->
+      <p-panel>
+        <p-header *ngIf="business.id === getEmptyGuid()">
+          Add Business
+        </p-header>
+        <p-header *ngIf="business.id !== getEmptyGuid()">
+          Edit Business - [Aedile Id: {{ business.identity }}]
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Company Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Company Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Company name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['name'].hasError('required') && businessForm.dirty">
+                Company name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['name'].hasError('maxlength') && businessForm.dirty">
+                Company name can't be more than 50 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Trading Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Trading Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="tradingName" placeholder="Trading name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['tradingName'].hasError('required') && businessForm.dirty">
+                Trading name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['tradingName'].hasError('maxlength') && businessForm.dirty">
+                Trading name can't be more than 50 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Business Type-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Business Type *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.businessTypes" [(ngModel)]="business.businessType" formControlName="businessType" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--ABN-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2" (click)="getAbn()">
+              ABN *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="abn" placeholder="ABN..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['abn'].hasError('required') && businessForm.dirty">
+                ABN is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['abn'].hasError('maxlength') && businessForm.dirty">
+                ABN must be 11 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['abn'].hasError('minlength') && businessForm.dirty">
+                ABN must be 11 characters
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['abn'].hasError('invalidAbn') && businessForm.dirty">
+                Invalid ABN
+              </div>
+            </div>
+          </div>
+
+          <!--Phone-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Phone *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="phone" placeholder="Phone..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['phone'].hasError('required') && businessForm.dirty">
+                Phone number is required
+              </div>
+            </div>
+          </div>
+
+          <!--Business Role-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Business Role *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.businessRoles" [(ngModel)]="business.businessRole" formControlName="businessRole" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Industry-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Industry *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.industries" [(ngModel)]="business.industryType" formControlName="industry" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+        </div>
+
+      </p-panel>
+
+      <br>
+
+      <!--Street Address Panel-->
+      <p-panel>
+        <p-header>
+          Street Address
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Street-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Street *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="streetAddressStreet" placeholder="Street..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressStreet'].hasError('required') && businessForm.dirty">
+                Street is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressStreet'].hasError('maxlength') && businessForm.dirty">
+                Street can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Suburb-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Suburb *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="streetAddressSuburb" placeholder="Suburb..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressSuburb'].hasError('required') && businessForm.dirty">
+                Suburb is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressSuburb'].hasError('maxlength') && businessForm.dirty">
+                Suburb can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Postcode-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Postcode *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="streetAddressPostcode" placeholder="Postcode..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressPostcode'].hasError('required') && businessForm.dirty">
+                Postcode is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressPostcode'].hasError('maxlength') && businessForm.dirty">
+                Postcode must be 4 digits
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['streetAddressPostcode'].hasError('minlength') && businessForm.dirty">
+                Postcode must be 4 digits
+              </div>
+            </div>
+          </div>
+
+          <!--State-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              State *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.regions" [(ngModel)]="business.streetAddressRegion" formControlName="streetAddressRegion" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Country-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Country *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.countries" [(ngModel)]="business.streetAddressCountry" formControlName="streetAddressCountry" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+       <!--Mail Address Panel-->
+       <p-panel>
+        <p-header>
+          Mail Address
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Street-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Street/PO Box *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="mailAddressStreet" placeholder="Street..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressStreet'].hasError('required') && businessForm.dirty">
+                Street is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressStreet'].hasError('maxlength') && businessForm.dirty">
+                Street can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Suburb-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Suburb *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="mailAddressSuburb" placeholder="Suburb..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressSuburb'].hasError('required') && businessForm.dirty">
+                Suburb is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressSuburb'].hasError('maxlength') && businessForm.dirty">
+                Suburb can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Postcode-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Postcode *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="mailAddressPostcode" placeholder="Postcode..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressPostcode'].hasError('required') && businessForm.dirty">
+                Postcode is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressPostcode'].hasError('maxlength') && businessForm.dirty">
+                Postcode must be 4 digits
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="businessForm.controls['mailAddressPostcode'].hasError('minlength') && businessForm.dirty">
+                Postcode must be 4 digits
+              </div>
+            </div>
+          </div>
+
+          <!--State-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              State *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.regions" [(ngModel)]="business.mailAddressRegion" formControlName="mailAddressRegion" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Country-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Country *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="business.countries" [(ngModel)]="business.mailAddressCountry" formControlName="mailAddressCountry" [autoWidth]="false">></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Buttons-->
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="businessForm.pristine || businessForm.invalid"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+</div>

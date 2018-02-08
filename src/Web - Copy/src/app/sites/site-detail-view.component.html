@@ -1,0 +1,60 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false && site" class="container">
+
+  <!--Error Messages-->
+  <p-messages [value]="errors"></p-messages>
+
+  <!--Panel-->
+  <p-panel>
+    <p-header>
+      {{site.name}} ({{ site.businessName }}) - [Aedile Id: {{ site.identity }}]
+      <button pButton type="text" [routerLink]="['/site/edit', site.id, site.businessId]" label="Edit" style="float: right"></button>
+      <button pButton type="text" [routerLink]="['/site/add', site.businessId]" label="Add Site" style="float: right"></button>
+    </p-header>
+    <div class="ui-g form-group">
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="site.name">
+          <label>Site Name</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="site.code">
+          <label>Site Code</label>
+        </div>
+      </div>
+      <div class="ui-g-12" *ngIf="site.safetyInstructionName">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="site.safetyInstructionName">
+          <label>Safety Instruction</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="site.addressString()">
+          <label>Address</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="md-inputfield">
+          <input type="text" pInputText readonly class="aed-input" [value]="complianceItemsString()">
+          <label>Compliance Items</label>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+
+  <!--SiteObjects-->
+  <div class="row">
+    <aed-siteobject-summary-list [siteId]="site.id" [businessId]="site.businessId"></aed-siteobject-summary-list>
+  </div>
+
+  <!--Assets-->
+  <div class="row">
+    <aed-asset-list [showBusinessFilterSection]="false" [siteId]="site.id"></aed-asset-list>
+  </div>
+  <br>
+
+</div>

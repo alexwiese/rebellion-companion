@@ -1,0 +1,39 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false" class="container">
+  <p-messages [value]="errors"></p-messages>
+  <div *ngIf="complianceItem">
+    <p-panel header="Compliance Item - {{ complianceItem.name }}">
+      <div class="ui-g form-group">
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{  complianceItem.name}}">
+            <label>Name</label>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{  complianceItem.typeString() }}">
+            <label>Type</label>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{  complianceItem.levelString() }}">
+            <label>Level</label>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="md-inputfield">
+            <input type="text" pInputText readonly class="aed-input" value="{{  complianceItem.issuingAuthority }}">
+            <label>Issuing Authority</label>
+          </div>
+        </div>
+
+      </div>        
+    </p-panel>
+  </div>
+  <br>
+  <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+  <br>
+</div>

@@ -1,0 +1,50 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages *ngIf="loading != true && errors.length > 0" [value]="errors"></p-messages>
+
+<div *ngIf="canDisplay()" class="ui-g">
+
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <h3>Welcome {{dashboard.username}}</h3>
+    <p>Welcome to your Aedile account dashboard</p>
+  </div>
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <h3></h3>
+    <div class="well well-lg">You have x new business enquiries waiting to be reviewed.</div>
+  </div>
+
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <p-panel header="Businesses" *ngIf="authService.hasPersmission(roleType.Maintainer)">
+      <p>There are {{ dashboard.activeBusinesses || 0 }} active businesses.</p>
+      <p>
+        <button pButton [routerLink]="['/business/add']" label="Add Business"></button>
+        <button pButton [routerLink]="['/businesslist']" label="View Businesses"></button>
+      </p>
+    </p-panel>
+  </div>
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <p-panel header="People" *ngIf="authService.hasPersmission(roleType.Maintainer)">
+      <p>There are {{ dashboard.activePersons || 0 }} active persons.</p>
+      <p>
+        <button pButton [routerLink]="['/people', '']" label="Add Person"></button>
+        <button pButton [routerLink]="['/peoplelist']" label="View Person"></button>
+      </p>
+    </p-panel>
+  </div>
+
+  <div class="ui-g-12 ui-md-12 ui-lg-12">
+    <h4>Latest Activity - {{ startDateDisplay }} to {{ endDateDisplay }}</h4>
+  </div>
+
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <p-panel header="Sites">
+      There are {{ dashboard.newSites || 0 }} new sites.
+    </p-panel>
+  </div>
+  <div class="ui-g-12 ui-md-6 ui-lg-6">
+    <p-panel header="Assets">
+      There are {{ dashboard.newAssets || 0 }} new assets.
+    </p-panel>
+  </div>
+
+</div>

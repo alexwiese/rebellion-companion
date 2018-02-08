@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { SystemStatus, System } from '../app.component';
+import { System, SystemStatus, PopulousSystem } from '../models/models';
 
 @Component({
   selector: 'system-list-item',
@@ -10,7 +10,7 @@ export class SystemListItemComponent implements OnInit {
 
   constructor() { }
 
-  @Input() system: System;
+  @Input() system: PopulousSystem;
 
   ngOnInit() {
   }

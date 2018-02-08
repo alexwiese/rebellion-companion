@@ -1,0 +1,460 @@
+<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<div *ngIf="loading == false">
+  <p-messages [value]="errors"></p-messages>
+  <p-messages [value]="successMessages"></p-messages>
+  <div *ngIf="loaded">
+    <form [formGroup]="workOrderForm" (ngSubmit)="onSubmit(workOrderForm.value)">
+
+      <!--Work Order Panel-->
+      <p-panel>
+        <p-header>
+          <div *ngIf="workOrderId">Edit Work Order [{{ workOrder.identity }}]</div>
+          <div *ngIf="!workOrderId">Add Work Order</div>
+        </p-header>
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+
+          <!--Site-->
+          <div class="ui-grid-row aed-row" *ngIf="isNewWorkOrder()">
+            <div class="ui-grid-col-2">
+              Site
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="sites" [style]="{'width':'100%'}" [(ngModel)]="siteId" (onChange)="onSiteChanged($event)" formControlName="siteId"
+                [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Site Object-->
+          <div class="ui-grid-row aed-row" *ngIf="isNewWorkOrder()">
+            <div class="ui-grid-col-2">
+              Building
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="siteObjects" [style]="{'width':'100%'}" [(ngModel)]="siteObjectId" (onChange)="onSiteObjectChanged($event)"
+                formControlName="siteObjectId" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Name-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Name *
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText type="text" formControlName="name" placeholder="Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['name'].hasError('required') && workOrderForm.dirty">
+                Name is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['name'].hasError('maxlength') && workOrderForm.dirty">
+                Name can't be more than 100 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Description-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Description *
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="30" formControlName="description" placeholder="Description..." autoResize="autoResize"></textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['description'].hasError('required') && workOrderForm.dirty">
+                Description is required
+              </div>
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['description'].hasError('maxlength') && workOrderForm.dirty">
+                Description can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Additional Information-->
+          <div class="ui-grid-row aed-row" *ngIf="showAdditionalInformationControl()">
+            <div class="ui-grid-col-2">
+              Additional Information
+            </div>
+            <div class="ui-grid-col-6">
+              <textarea pInputTextarea rows="5" cols="30" formControlName="additionalInformation" placeholder="Please provide any background information about the Asset, it's location and the work required..."
+                autoResize="autoResize">
+              </textarea>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['additionalInformation'].hasError('maxlength') && workOrderForm.dirty">
+                Additional Information can't be more than 1000 characters
+              </div>
+            </div>
+          </div>
+
+          <!--Type-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Type *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="workOrder.types" (onChange)="workOrderTypeChangedToggled($event)" [(ngModel)]="workOrder.type" formControlName="type"
+                [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Priority-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Priority *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="workOrder.priorityTypes" [(ngModel)]="workOrder.priority" formControlName="priority" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Trade Type-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Trade *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="workOrder.tradeTypes" [(ngModel)]="workOrder.trade" formControlName="trade" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--HasAssetDetails-->
+          <div class="ui-grid-row aed-row" *ngIf="showSingularAssetDetails()">
+            <div class="ui-grid-col-2">
+              Do you have the asset details?
+            </div>
+            <div class="ui-grid-col-1">
+              <p-toggleButton formControlName="hasAssetDetails" (onChange)="hasAssetDetailsToggled($event)" [(ngModel)]="workOrder.hasAssetDetails"
+                onLabel="Yes" offLabel="No"></p-toggleButton>
+            </div>
+            <div class="ui-grid-col-9">
+            </div>
+          </div>
+
+          <!--Status-->
+          <div class="ui-grid-row  aed-row">
+            <div class="ui-grid-col-2">
+              Status *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="workOrder.statusTypes" [(ngModel)]="workOrder.status" formControlName="status" [autoWidth]="false"></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Asset Name-->
+          <div class="ui-grid-row aed-row" *ngIf="workOrder.hasAssetDetails">
+            <div class="ui-grid-col-2">
+              Asset Name
+            </div>
+            <div class="ui-grid-col-6">
+              <input pInputText readonly type="text" formControlName="assetName" placeholder="Asset Name..." />
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!--Assigned Business-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Assigned Business *
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="businesses" [(ngModel)]="workOrder.businessId" (onChange)="onChangeBusiness($event)" formControlName="businessId"
+                [autoWidth]="false" filter="filter" #business></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['businessId'].hasError('required') && workOrderForm.dirty">
+                Assigned business is required
+              </div>
+            </div>
+          </div>
+
+          <!--Assigned Person-->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+            </div>
+            <div class="ui-grid-col-6">
+              <p-dropdown [options]="people" [(ngModel)]="workOrder.personId" formControlName="personId" [autoWidth]="false" filter="filter"
+                #person></p-dropdown>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+
+          <!-- Required Date -->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Required Date
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="requiredDate" formControlName="requiredDate" [showIcon]="true" dateFormat="dd/mm/yy" #requiredDate></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['requiredDate'].hasError('required') && workOrderForm.dirty">
+                Required date is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Start Date -->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Start Date
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="startDate" formControlName="startDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['startDate'].hasError('required') && workOrderForm.dirty">
+                Start date is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Completed Date -->
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Completed Date
+            </div>
+            <div class="ui-grid-col-6">
+              <p-calendar id="completedDate" formControlName="completedDate" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['completedDate'].hasError('required') && workOrderForm.dirty">
+                Completed date is required
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <!--Asset Details Panel-->
+      <p-panel header="Asset Details" *ngIf="displayAssetCollectionPanel()">
+        <div class="card card-w-title" *ngIf="isNewWorkOrder()">
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Asset Class Level 1
+            </div>
+            <div class="ui-grid-col-6">
+              <p-multiSelect [options]="assetClassLevelOnes" [style]="{'width':'100%'}" formControlName="assetClassLevelOneId" (onChange)="onAssetClassLevelOneChanged($event)"></p-multiSelect>
+            </div>
+            <div class="ui-grid-col-4">
+              <div class="ui-message ui-messages-error ui-corner-all" *ngIf="workOrderForm.controls['assetClassLevelOneId'].hasError('assetClassOneRequired') && workOrderForm.dirty">
+                Asset Class must be selected as the Work Order is of type Asset Audit
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-w-title" *ngIf="!isNewWorkOrder()">
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Site
+            </div>
+            <div class="ui-grid-col-6">
+              <span>{{ workOrder.siteName }} </span>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Building
+            </div>
+            <div class="ui-grid-col-6">
+              <span>{{ workOrder.siteObjectName }} </span>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+          <div class="ui-grid-row aed-row">
+            <div class="ui-grid-col-2">
+              Asset Class Level One
+            </div>
+            <div class="ui-grid-col-6">
+              <span>{{ workOrder.assetClassLevelOneName }} </span>
+            </div>
+            <div class="ui-grid-col-4">
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-grid-row aed-row">
+          <aed-workorderassets-totals [workOrderAssets]="workOrder.assets"></aed-workorderassets-totals>
+          <p-dataTable [value]="workOrder.assets" selectionMode="multiple" [responsive]="true" [globalFilter]="gb" #dt>
+            <p-header>
+              <div class="ui-helper-clearfix">
+                <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+                <input #gb type="text" class="white-input" id="filter" pInputText size="50" style="float: left" placeholder="Search Assets">
+                <button type="button" [routerLink]="['/workorderasset/add', workOrder.siteId, workOrder.siteObjectId, workOrder.id]" [disabled]="!canAddWorOrderAsset()"
+                  pButton icon="fa-window-maximize" iconPos="right" label="Add Asset" style="float:right">
+                </button>
+              </div>
+            </p-header>
+            <p-column field="barcode" header="Barcode" [sortable]="true"></p-column>
+            <p-column field="assetTypeName" header="Asset Type" [filter]="true" filterMatchMode="in">
+              <ng-template pTemplate="filter" let-col>
+                <p-multiSelect [options]="assetTypeNames" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-multiSelect>
+              </ng-template>
+              <ng-template let-asset="rowData" pTemplate="body">
+                {{ asset.assetTypeName }}
+              </ng-template>
+            </p-column>
+            <p-column field="name" header="Asset Name" [sortable]="true"></p-column>
+            <p-column field="locationLevel" header="Level" [filter]="true" filterMatchMode="in">
+              <ng-template pTemplate="filter" let-col>
+                <p-multiSelect [options]="levels" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-multiSelect>
+              </ng-template>
+              <ng-template let-asset="rowData" pTemplate="body">
+                {{ asset.locationLevel }}
+              </ng-template>
+            </p-column>
+            <p-column field="locationRoom" header="Room" [filter]="true" filterMatchMode="in">
+              <ng-template pTemplate="filter" let-col>
+                <p-multiSelect [options]="rooms" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-multiSelect>
+              </ng-template>
+              <ng-template let-asset="rowData" pTemplate="body">
+                {{ asset.locationRoom }}
+              </ng-template>
+            </p-column>
+            <p-column field="assetClassLevelOneName" header="Asset Class Level 1" [filter]="true" filterMatchMode="in">
+              <ng-template pTemplate="filter" let-col>
+                <p-multiSelect [options]="assetClassLevelOneFilters" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-multiSelect>
+              </ng-template>
+              <ng-template let-asset="rowData" pTemplate="body">
+                {{ asset.assetClassLevelOneName }}
+              </ng-template>
+            </p-column>
+            <p-column field="verificationStatusString" header="Verification Status" [filter]="true" filterMatchMode="in">
+              <ng-template pTemplate="filter" let-col>
+                <p-multiSelect [options]="verificationStatusTypes" defaultLabel="All" (onChange)="dt.filter($event.value, col.field, col.filterMatchMode)"
+                  styleClass="ui-column-filter"></p-multiSelect>
+              </ng-template>
+              <ng-template let-item="rowData" pTemplate="body">
+                <span *ngIf="showNewVerificationStatus(item)">New</span>
+                <p-selectButton class="aed-select-button" *ngIf="!showNewVerificationStatus(item)" [options]="item.verificationStatusTypes"
+                  [(ngModel)]="item.verificationStatus" [ngModelOptions]="{standalone: true}" (onChange)="onVerificationTypeChanged($event)"></p-selectButton>
+              </ng-template>
+            </p-column>
+            <p-column styleClass="col-button">
+              <ng-template let-item="rowData" pTemplate="body">
+                <button pButton type="text" [disabled]="!item.assetTypeName" (click)="confirmClone(item, $event.preventDefault())" icon="fa-clone"
+                  title="Clone"></button>
+                <button pButton type="text" [disabled]="!displayAssetEditButton(item.assetId)" [routerLink]="['/asset/edit', item.assetId]"
+                  icon="fa-edit" title="Edit"></button>
+                <button pButton type="text" [disabled]="!displayMergeButton(item)" [routerLink]="['/asset/merge', workOrder.id, item.assetId]"
+                  icon="fa-compress" title="Merge"></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
+      </p-panel>
+
+      <p-confirmDialog header="Confirm Asset Clone" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
+      <p-panel header="Asset Details" *ngIf="!displayAssetCollectionPanel()">
+        <div class="ui-grid-row aed-row">
+          <div class="ui-grid-col-12">
+            <div class="card card-w-title">
+              <div class="ui-g">
+                <div class="ui-g-12 ui-md-4">
+                  <p-radioButton name="assetSearch" value="assetLocation" label="Asset Location" formControlName="assetSelectionMode" (onClick)="onAssetSearchTypeClicked('assetLocation')"></p-radioButton>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                  <p-radioButton name="assetSearch" value="barcode" label="Barcode" formControlName="assetSelectionMode" (onClick)="onAssetSearchTypeClicked('barcode')"></p-radioButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-grid-row aed-row" *ngIf="workOrderForm.controls['assetSelectionMode'].value === 'barcode'">
+          <div class="ui-grid-col-12">
+            <div class="card card-w-title">
+              <h3>Barcode:</h3>
+              <div class="ui-g">
+                <div class="ui-g-2">
+                  Asset Barcode
+                </div>
+                <div class="ui-g-6">
+                  <input type="text" pInputText formControlName="barcode" style="width: 100%" />
+                </div>
+                <div class="ui-g-4">
+                  <button pButton type="text" #barcode class="ui-button-info aed-button" label="Search" (click)="searchByBarcode($event, workOrderForm.controls['barcode'].value)"></button>
+                </div>
+              </div>
+              <div class="ui-g" *ngIf="asset && asset.name">
+                <div class="ui-g-2">
+                  Is this the asset you were looking for?
+                </div>
+                <div class="ui-g-6">
+                  <input pInputText readonly type="text" formControlName="barcodeAssetName" style="width: 100%" />
+                </div>
+                <div class="ui-g-4">
+                  <button pButton type="text" class="ui-button-success aed-button" label="Yes" (click)="setAsset($event, workOrderForm.controls['barcodeAssetName'].value)"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-grid-row aed-row" *ngIf="workOrderForm.controls['assetSelectionMode'].value === 'assetLocation'">
+          <div class="ui-grid-col-12">
+            <div class="card card-w-title">
+              <h3>Asset Location:</h3>
+              <div class="ui-g">
+                <div class="ui-g-2">
+                  Asset Location
+                </div>
+                <div class="ui-g-5">
+                  <input type="text" pInputText formControlName="assetLocation" style="width: 100%" />
+                </div>
+                <div class="ui-g-1">
+                  <button pButton type="text" #barcode class="ui-button-info aed-button" label="Search" (click)="searchByAssetLocation($event, workOrderForm.controls['assetLocation'].value)"></button>
+                </div>
+              </div>
+              <div class="ui-g" *ngIf="assets && assets.length > 0">
+                <div class="ui-g-2">
+                  Select the asset you were looking for
+                </div>
+                <div class="ui-g-5">
+                  <p-dropdown [options]="assets" [(ngModel)]="workOrder.assetId" (onChange)="onChangeAsset($event)" formControlName="assetId"
+                    [autoWidth]="true" style="width: 100%"></p-dropdown>
+                </div>
+                <div class="ui-g-1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-panel>
+
+      <br>
+
+      <button pButton class="ui-button-info aed-button" type="submit" [disabled]="workOrderForm.pristine || workOrderForm.invalid"
+        label="Save"></button>
+      <button pButton class="ui-button-info aed-button" type="button" (click)="goBack()" label="Cancel"></button>
+
+      <br>
+    </form>
+  </div>

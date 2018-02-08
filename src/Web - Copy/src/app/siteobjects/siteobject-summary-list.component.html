@@ -1,0 +1,52 @@
+﻿<div *ngIf="loading == true" class="loader">Loading..</div>
+
+<p-messages [value]="errors"></p-messages>
+
+<div *ngIf="loading == false" class="context-section aedile-datatable">
+  <h2>{{labelText}}s ({{ numberOfItems }})</h2>
+  <p-dataTable [value]="items" selectionMode="single" [responsive]="true" [rows]="20" [paginator]="true" [pageLinks]="7" [rowsPerPageOptions]="[10,20, 30]"
+    [globalFilter]="gb" #dt>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <i class="fa fa-search" style="margin:4px 4px 0 0; float:left"></i>
+        <input #gb type="text" id="filter" pInputText size="50" style="float: left" placeholder="Search {{labelText}}s">
+        <button type="button" pButton icon="fa-arrow-down" iconPos="right" label="Export" (click)="dt.exportCSV()" style="float:right"></button>
+        <button type="button" pButton icon="fa-window-maximize" iconPos="right" label="{{ addButtonText }}" (click)="navigateToAddSiteObject()"
+          style="float:right"></button>
+      </div>
+    </p-header>
+    <p-column [filter]="false" filterPlaceholder="Search" [sortable]="true">
+      <ng-template pTemplate="header">
+        <span>{{ setHeader('Id') }}</span>
+      </ng-template>
+      <ng-template let-item="rowData" pTemplate="body">
+        <span>{{ item.identity }}</span>
+      </ng-template>
+    </p-column>
+    <p-column [filter]="false" filterPlaceholder="Search" [sortable]="true">
+      <ng-template pTemplate="header">
+        <span>{{ setHeader('Code') }}</span>
+      </ng-template>
+      <ng-template let-item="rowData" pTemplate="body">
+        <span>{{ item.code }}</span>
+      </ng-template>
+    </p-column>
+    <p-column [filter]="false" filterPlaceholder="Search" [sortable]="true">
+      <ng-template pTemplate="header">
+        <span>{{ setHeader('Name') }}</span>
+      </ng-template>
+      <ng-template let-item="rowData" pTemplate="body">
+        <span>{{ item.name }}</span>
+      </ng-template>
+    </p-column>
+    <p-column field="typeString" header="Type" [filter]="false" filterPlaceholder="Search" [sortable]="true"></p-column>
+    <p-column styleClass="col-button">
+      <ng-template let-siteobject="rowData" pTemplate="body">
+        <button pButton type="text" [routerLink]="['/business', businessId, 'site', siteId, 'siteobject', siteobject.id]" icon="fa-edit"
+          title="Edit Site Object"></button>
+        <button pButton type="text" [routerLink]="['/business', businessId, 'site', siteId, 'siteobject', siteobject.id, 'view']"
+          icon="fa-eye" title="View Site Object"></button>
+      </ng-template>
+    </p-column>
+  </p-dataTable>
+</div>
