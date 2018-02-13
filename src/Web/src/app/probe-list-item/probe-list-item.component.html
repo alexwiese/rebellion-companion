@@ -1,4 +1,6 @@
 <mat-list-item class="system-row" ngClass.gt-sm="large">
   <p matLine>{{system.name}}</p>
+  <img src="assets/icons/subjugation.png" class="system-icon" [ngClass]="{'set':system.hadImperialGroundTroops}" (click)="hadImperialGroundTroopsClicked()">
+  <img src="assets/icons/empire.png" class="system-icon" [ngClass]="{'set':system.hadImperialLoyalty}" (click)="hadImperialLoyaltyClicked()">
   <img src="assets/icons/probe.png" class="system-icon" [ngClass]="{'set':system.probed}" (click)="clicked()">
 </mat-list-item>

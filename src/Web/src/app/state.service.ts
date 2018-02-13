@@ -25,6 +25,8 @@ export class StateService {
           }
 
           this.board.systems[element.name].probed = element.probed;
+          this.board.systems[element.name].hadImperialGroundTroops = element.hadImperialGroundTroops;
+          this.board.systems[element.name].hadImperialLoyalty = element.hadImperialLoyalty;
         });
       }
       catch{
@@ -58,6 +60,8 @@ export class StateService {
 
     this.systems.forEach(system => {
       system.probed = false;
+      system.hadImperialGroundTroops = false;
+      system.hadImperialLoyalty = false;
     });
   }
 

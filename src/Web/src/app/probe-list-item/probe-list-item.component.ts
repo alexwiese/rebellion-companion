@@ -4,7 +4,7 @@ import { System } from '../models/models';
 @Component({
   selector: 'probe-list-item',
   templateUrl: './probe-list-item.component.html',
-  styleUrls: [ '../system-list-item/system-list-item.component.css','./probe-list-item.component.scss']
+  styleUrls: ['../system-list-item/system-list-item.component.css', './probe-list-item.component.scss']
 })
 export class ProbeListItemComponent implements OnInit {
 
@@ -15,7 +15,15 @@ export class ProbeListItemComponent implements OnInit {
   ngOnInit() {
   }
 
-  clicked(){
-    this.system.probed = !this.system.probed ;
+  clicked() {
+    this.system.probed = !this.system.probed;
+  }
+
+  hadImperialGroundTroopsClicked() {
+    this.system.hadImperialGroundTroops = !this.system.hadImperialGroundTroops;
+  }
+
+  hadImperialLoyaltyClicked() {
+    this.system.hadImperialLoyalty = !this.system.hadImperialLoyalty;
   }
 }

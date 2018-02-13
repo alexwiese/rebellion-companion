@@ -5,7 +5,11 @@
 </div>
 
 <mat-toolbar class="footer" fxLayout="row" fxLayoutAlign="space-evenly center">
-  <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex>
+  <div fxLayout="row" fxLayoutAlign="space-evenly center" fxFlex fxLayoutWrap >
+    <p style="margin-right:5px">Discovered: {{ discoveredCount | percent }}</p> 
     <button mat-button (click)="reset()">Reset</button>
+    <button mat-button (click)="toggleHideInvaded()">{{ hideInvaded ? "Show" : "Hide" }} Invaded</button>
+    <button mat-button (click)="toggleHideLoyalty()">{{ hideLoyalty ? "Show" : "Hide" }} Loyalty</button>
+    <button mat-button (click)="toggleHideProbed()">{{ hideProbed ? "Show" : "Hide" }} Probed</button>
   </div>
 </mat-toolbar>

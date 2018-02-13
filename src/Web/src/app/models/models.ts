@@ -2,6 +2,8 @@ import * as _ from 'underscore';
 
 export abstract class System {
   public probed: boolean;
+  public hadImperialLoyalty: boolean;
+  public hadImperialGroundTroops: boolean;
 
   constructor(public name: string) {
   }
@@ -45,7 +47,7 @@ export class RemoteSystem extends System {
 
 }
 
-class Coruscant extends PopulousSystem {
+export class Coruscant extends PopulousSystem {
   private _status: SystemStatus;
 
   get status(): SystemStatus {
@@ -64,12 +66,12 @@ class Coruscant extends PopulousSystem {
   }
 
   constructor() {
-    super("Coruscant", 1, ResourceIcon.BlueTriangle);
+    super("Coruscant", 1, ResourceIcon.YellowTriangle);
     this.status = SystemStatus.ImperialLoyalty;
   }
 }
 
-class RebelBase extends PopulousSystem {
+export class RebelBase extends PopulousSystem {
 
   private _status: SystemStatus;
 
