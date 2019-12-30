@@ -185,7 +185,7 @@ class BuildResult {
   }
 }
 
-namespace ResourceNames {
+namespace BaseResourceNames {
   export const XWingYWingTransport = "X-Wing, Y-Wing, or Rebel Transport";
   export const CorellianCorvette = "Corellian Corvette";
   export const MonCalamariCruiser = "Mon Calamari Cruiser";
@@ -198,6 +198,22 @@ namespace ResourceNames {
   export const StarDestroyer = "Star Destroyer";
   export const Stormtrooper = "Stormtrooper";
   export const AtSt = "AT-ST";
+  export const AtAt = "AT-AT";
+}
+  
+namespace ResourceNames {
+  export const XWingYWingTransport = "X-Wing, Y-Wing, U-Wing, or Rebel Transport";
+  export const CorellianCorvette = "Corellian Corvette or Nebulon-B Frigate";
+  export const MonCalamariCruiser = "Mon Calamari Cruiser";
+  export const RebelTrooper = "Rebel Trooper or Vanguard";
+  export const Airspeeder = "Airspeeder or Golan Arms Turret";
+  export const ShieldGeneratorIonCannon = "Shield Generator or Ion Cannon";
+
+  export const TieFighter = "TIE Fighter or TIE Strikers";
+  export const AssaultCarrier = "Assault Carrier";
+  export const StarDestroyer = "Star Destroyer";
+  export const Stormtrooper = "Stormtrooper or Assault Tank";
+  export const AtSt = "AT-ST or Shield Bunker";
   export const AtAt = "AT-AT";
 }
 
